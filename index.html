@@ -815,6 +815,7 @@ body.is-briefing .prompts{opacity:0;visibility:hidden;pointer-events:none}
   opacity:0;transition:opacity .8s ease;
 }
 body.is-destination-map .center-title{opacity:1}
+body.is-destination-map .hud{visibility:hidden;pointer-events:none}
 .center-title .ct-main{
   font-family:var(--display);font-weight:300;font-size:14px;letter-spacing:.55em;
   color:var(--white);
@@ -841,7 +842,7 @@ body.is-destination-map .center-title{opacity:1}
   transform:translateY(8px);
   transition:transform .55s cubic-bezier(.2,.7,.2,1), opacity .45s ease, visibility .45s;
 }
-body.is-destination-map .dest-panel{transform:translateY(0);opacity:1;visibility:visible}
+body.is-destination-map .dest-panel{transform:translateY(0);opacity:1;visibility:visible;pointer-events:auto}
 
 .bracket{position:absolute;width:18px;height:18px;border:1px solid var(--gold)}
 .bk-tl{top:-1px;left:-1px;border-right:none;border-bottom:none}
@@ -860,7 +861,6 @@ body.is-destination-map .dest-panel{transform:translateY(0);opacity:1;visibility
 .panel-head .ph-r{
   font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:var(--grey);
 }
-.panel-head .back-btn{margin-left:12px;flex-shrink:0}
 
 .dest-list{position:relative;flex:1;min-height:0;overflow:hidden;pointer-events:none}
 .dest-row{
@@ -1454,7 +1454,7 @@ body.is-destination-map .back-btn{color:var(--gold)}
 .cursor.is-hot::after{background:var(--teal)}
 .mobile-menu-btn{position:fixed;top:max(16px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));z-index:14;display:none;min-width:48px;min-height:48px;align-items:center;justify-content:center;padding:0 14px;border:1px solid rgba(201,169,110,.7);background:rgba(2,4,12,.78);color:var(--white);font-family:var(--display);font-size:12px;letter-spacing:.2em;text-transform:uppercase;backdrop-filter:blur(6px);touch-action:manipulation}
 .mobile-menu-btn:focus-visible{outline:2px solid var(--white);outline-offset:3px}
-body.is-briefing .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:none}
+body.is-briefing .mobile-menu-btn,body.is-destination-map .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:none}
 .player-card:focus-visible{outline:2px solid var(--white);outline-offset:4px}
 .gm-tab:focus-visible,.gm-link:focus-visible,.dest-btn:focus-visible,.back-btn:focus-visible,.audio-btn:focus-visible{outline:2px solid var(--white);outline-offset:3px}
 
@@ -1813,10 +1813,6 @@ body.is-briefing .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:non
   <div class="panel-head">
     <div class="ph-l">SET DESTINATION</div>
     <div class="ph-r">SOL SYSTEM // 03 PROJECTS</div>
-    <button class="back-btn" id="backBtn" type="button" aria-label="Exit destinations and return to orbit">
-      <span class="arr" aria-hidden="true">⟵</span>
-      <span>RETURN TO ORBIT</span>
-    </button>
   </div>
   <div class="dest-list" id="destList" role="group" aria-label="Portfolio destinations">
     <svg class="map-orbits" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true">
@@ -1837,6 +1833,10 @@ body.is-briefing .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:non
     </details>
   </div>
   <div class="panel-foot">
+    <button class="back-btn" id="backBtn" type="button" aria-label="Exit destinations and return to orbit">
+      <span class="arr" aria-hidden="true">⟵</span>
+      <span>RETURN TO ORBIT</span>
+    </button>
     <span class="pf-l">SELECT TO ENGAGE</span>
     <span class="pf-r">ARROWS NAVIGATE · ENTER SELECT</span>
   </div>
