@@ -444,7 +444,6 @@ body.is-warp-lightspeed .lightspeed{opacity:1}
     transparent 75%);
   filter:blur(2px);
   animation:lsBurstPulse 2.4s ease-in-out infinite alternate;
-  will-change:transform,opacity;
 }
 @keyframes lsBurstPulse{
   0%{transform:scale(1);opacity:1}
@@ -485,6 +484,10 @@ body.is-warp-lightspeed .lightspeed{opacity:1}
   animation:lsEnginePulse 1s ease-in-out infinite alternate;
   transform-origin:center;
 }
+.ls-burst,.ls-streak,.ls-engine-pulse{animation-play-state:paused}
+body.is-warp-lightspeed .ls-burst,
+body.is-warp-lightspeed .ls-streak,
+body.is-warp-lightspeed .ls-engine-pulse{animation-play-state:running}
 @keyframes lsEnginePulse{
   0%{opacity:.55;transform:scale(.92)}
   100%{opacity:1;transform:scale(1.08)}
