@@ -930,6 +930,9 @@ body.is-destination-map .dest-panel{transform:translateY(0);opacity:1;visibility
 .tower-marker[open] .tower-links{display:flex}
 .tower-links a{display:flex;align-items:center;justify-content:center;min-width:96px;min-height:44px;padding:6px 10px;color:var(--gold);font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-decoration:none;border:1px solid rgba(201,169,110,.3)}
 .tower-links a:hover,.tower-links a:focus-visible{color:var(--white);border-color:var(--white);outline:none}
+@media (max-width:1100px) and (orientation:landscape) and (pointer:coarse){
+  .tower-links{top:50%;left:calc(100% + 8px);transform:translateY(-50%)}
+}
 
 .panel-foot{
   display:flex;justify-content:space-between;align-items:center;gap:12px;
@@ -2102,6 +2105,10 @@ let pendingDest = -1;
 let mapFocus = 0;
 let returnToMapAfterModal = false;
 const towerMenu = document.querySelector('.tower-marker');
+document.addEventListener('click',e=>{
+  if(towerMenu.open&&!towerMenu.contains(e.target)) towerMenu.open=false;
+});
+towerMenu.querySelectorAll('.tower-links a').forEach(link=>link.addEventListener('click',()=>{towerMenu.open=false}));
 
 function showOrbit(){
   towerMenu.open = false;
