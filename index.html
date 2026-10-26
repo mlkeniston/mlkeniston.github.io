@@ -2101,8 +2101,10 @@ let activeWarpDest = -1;
 let pendingDest = -1;
 let mapFocus = 0;
 let returnToMapAfterModal = false;
+const towerMenu = document.querySelector('.tower-marker');
 
 function showOrbit(){
+  towerMenu.open = false;
   body.classList.add('is-orbit');
   body.classList.remove('is-destination-map','is-briefing');
   pendingDest = -1;
@@ -2119,6 +2121,7 @@ function showDestinationMap(){
   rows[mapFocus]?.focus();
 }
 function selectDestination(i){
+  towerMenu.open = false;
   pendingDest = i;
   body.classList.remove('is-destination-map');
   body.classList.add('is-orbit','is-briefing');
