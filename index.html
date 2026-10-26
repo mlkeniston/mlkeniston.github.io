@@ -56,12 +56,6 @@ body{
     radial-gradient(ellipse 50% 35% at 25% 30%, rgba(91,200,216,.07), transparent 60%),
     radial-gradient(ellipse 40% 30% at 78% 25%, rgba(201,169,110,.05), transparent 60%),
     radial-gradient(ellipse 35% 25% at 50% 75%, rgba(120,80,180,.04), transparent 60%);
-  filter:blur(40px);
-  animation:drift 80s ease-in-out infinite alternate;
-}
-@keyframes drift{
-  0%{transform:translate(0,0) scale(1)}
-  100%{transform:translate(-1.5%,1%) scale(1.04)}
 }
 .stars,.stars::before,.stars::after{position:absolute;inset:0;pointer-events:none}
 .stars{
@@ -102,9 +96,7 @@ body{
     radial-gradient(1px 1px at 96% 60%, #fff, transparent),
     radial-gradient(1px 1px at 98% 8%, #fff8, transparent);
   background-size:100% 100%;
-  animation:twinkle 6s ease-in-out infinite alternate;
 }
-@keyframes twinkle{0%{opacity:.7}100%{opacity:1}}
 .stars::before{
   content:'';
   background-image:
@@ -143,7 +135,6 @@ body{
     radial-gradient(0.5px 0.5px at 95% 82%, #fff, transparent),
     radial-gradient(0.5px 0.5px at 97% 68%, #fff, transparent);
   opacity:.65;
-  animation:twinkle 9s ease-in-out infinite alternate-reverse;
 }
 .stars::after{
   content:'';
@@ -179,7 +170,6 @@ body{
     radial-gradient(0.4px 0.4px at 94% 80%, #fff, transparent),
     radial-gradient(0.4px 0.4px at 99% 38%, #fff, transparent);
   opacity:.4;
-  animation:twinkle 13s ease-in-out infinite alternate;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -195,21 +185,16 @@ body.is-orbit .sun{opacity:1}
   position:absolute;left:0;top:0;width:120px;height:120px;
   margin:-60px 0 0 -60px;border-radius:50%;
   background:radial-gradient(circle, #ffffff 0%, #fff8d8 30%, #ffd58a 55%, rgba(255,180,90,.4) 80%, transparent 100%);
-  filter:blur(2px);
-  animation:sunPulse 5s ease-in-out infinite alternate;
 }
 .sun-glow{
   position:absolute;left:0;top:0;width:900px;height:900px;
   margin:-450px 0 0 -450px;border-radius:50%;
   background:radial-gradient(circle, rgba(255,220,160,.45) 0%, rgba(255,180,90,.18) 25%, rgba(255,140,60,.08) 50%, transparent 75%);
-  filter:blur(20px);
-  animation:sunPulse 5s ease-in-out infinite alternate-reverse;
 }
 .sun-flare{
   position:absolute;left:0;top:0;width:1400px;height:80px;
   margin:-40px 0 0 -700px;
   background:linear-gradient(90deg, transparent 0%, rgba(255,200,140,0) 30%, rgba(255,220,170,.35) 50%, rgba(255,200,140,0) 70%, transparent 100%);
-  filter:blur(8px);
   transform:rotate(-12deg);
   opacity:.85;
 }
@@ -223,11 +208,7 @@ body.is-orbit .sun{opacity:1}
     transparent 200deg, rgba(255,220,170,.04) 204deg, transparent 208deg,
     transparent 280deg, rgba(255,220,170,.05) 284deg, transparent 288deg,
     transparent 340deg);
-  filter:blur(3px);opacity:.7;
-}
-@keyframes sunPulse{
-  0%{transform:scale(1);opacity:1}
-  100%{transform:scale(1.04);opacity:.92}
+  opacity:.7;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -304,7 +285,7 @@ body.is-orbit .planet::before{opacity:1}
   z-index:5;
   pointer-events:none;
   transition:transform 1.4s cubic-bezier(.7,0,.2,1), opacity 1s ease;
-  filter:drop-shadow(0 30px 60px rgba(0,0,0,.6));
+  filter:drop-shadow(0 12px 22px rgba(0,0,0,.45));
 }
 body.is-destination-map .ship-stage{opacity:0}
 .ship-stage svg,.ship-stage img{position:relative;z-index:1;width:100%;height:100%;display:block;overflow:visible}
@@ -317,7 +298,7 @@ body.is-destination-map .ship-stage{opacity:0}
 .engine-halo{
   position:absolute;width:16%;aspect-ratio:1;border-radius:50%;
   background:radial-gradient(circle,rgba(255,235,186,.92) 0%,rgba(255,146,57,.58) 27%,rgba(67,178,255,.34) 55%,transparent 74%);
-  filter:blur(15px);mix-blend-mode:screen;opacity:0;
+  opacity:0;
   animation:podGlowSettle 8s ease-out 5s forwards;
 }
 .engine-pod-a{left:58.2%;top:28%;transform:translate(-50%,-50%)}
@@ -325,13 +306,13 @@ body.is-destination-map .ship-stage{opacity:0}
 .engine-fire{
   position:absolute;width:21%;height:10%;border-radius:50%;
   background:radial-gradient(ellipse at 100% 50%,#fff 0%,#fff0bd 9%,#ffbd4d 20%,#ff6d2e 39%,rgba(70,172,255,.42) 63%,transparent 83%);
-  filter:blur(5px);mix-blend-mode:screen;opacity:0;
+  opacity:0;
   transform-origin:100% 50%;
   animation:thrusterBurn 8s ease-in-out 5s both;
 }
 .engine-fire::after{
   content:"";position:absolute;right:0;top:50%;width:20%;height:27%;
-  border-radius:50%;background:#fff7d8;filter:blur(4px);transform:translateY(-50%);
+  border-radius:50%;background:#fff7d8;transform:translateY(-50%);
 }
 .engine-fire-a{left:37.2%;top:23%;transform:rotate(16deg) scaleX(.4)}
 .engine-fire-b{left:10.2%;top:65%;transform:rotate(16deg) scaleX(.4)}
@@ -519,15 +500,6 @@ body.is-warp-lightspeed .ship-bob,
 body.is-warp-lightspeed .planet.is-active.spin{
   animation-play-state:paused;
 }
-/* Drop the modal backdrop-filter during lightspeed — re-blurring an
-   animated background every frame is the single most expensive thing
-   on the page. The opaque modal-box card stays readable without it. */
-body.is-warp-lightspeed .modal{
-  backdrop-filter:none;
-  -webkit-backdrop-filter:none;
-  background:rgba(0,0,0,.45);
-}
-
 /* ═══════════════════════════════════════════════════════
    HUD — top-left status, bottom-left telemetry
    ═══════════════════════════════════════════════════════ */
@@ -968,7 +940,7 @@ body.is-destination-map .back-btn{color:var(--gold)}
   position:fixed;inset:0;z-index:80;display:none;
   align-items:center;justify-content:center;
   padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));
-  overflow-y:auto;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);
+  overflow-y:auto;background:rgba(0,0,0,.72);
 }
 .modal.is-open{display:flex;animation:fadeIn .35s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -1093,7 +1065,6 @@ body.is-destination-map .back-btn{color:var(--gold)}
     var(--gm-bg-top) 0%,
     var(--gm-bg-mid) 55%,
     var(--gm-bg-bot) 100%);
-  backdrop-filter:blur(14px);
   overflow:hidden;
 
   /* Hidden state — fade out is symmetric with fade in */
@@ -1239,7 +1210,6 @@ body.is-destination-map .back-btn{color:var(--gold)}
   border:1px solid var(--gm-panel-edge);
   padding:24px 26px;
   position:relative;
-  backdrop-filter:blur(2px);
 }
 .gm-section-wide,.gm-section-full{grid-column:span 2}
 
@@ -1409,7 +1379,6 @@ body.is-destination-map .back-btn{color:var(--gold)}
   background:repeating-linear-gradient(to bottom,
     transparent 0px, transparent 2px,
     rgba(255,255,255,.012) 3px, transparent 4px);
-  mix-blend-mode:overlay;
 }
 .vignette{
   position:fixed;inset:0;pointer-events:none;z-index:91;
@@ -1417,9 +1386,15 @@ body.is-destination-map .back-btn{color:var(--gold)}
 }
 .grain{
   position:fixed;inset:0;pointer-events:none;z-index:92;
-  opacity:.06;mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='3'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/></svg>");
+  opacity:.035;
+  background-image:radial-gradient(rgba(255,255,255,.6) .5px,transparent .7px);
+  background-size:4px 4px;
 }
+
+/* Keep the hidden orbit scene idle under opaque overlays. */
+body.is-destination-map .ship-bob,
+body.is-guardian-menu-open .ship-bob,
+body.is-guardian-menu-open .planet.is-active{animation-play-state:paused}
 
 /* ═══════════════════════════════════════════════════════
    FADE-IN — black overlay clears over 5s on page load
@@ -2415,12 +2390,14 @@ function openGuardianMenu(){
   if(isGuardianMenuOpen()) return;
   menuOpener = document.activeElement;
   guardianMenu.classList.add('is-open');
+  body.classList.add('is-guardian-menu-open');
   setMenuExpanded(true);
   requestAnimationFrame(()=>guardianMenu.querySelector('.gm-tab.is-active')?.focus());
 }
 function closeGuardianMenu(){
   if(!isGuardianMenuOpen()) return;
   guardianMenu.classList.remove('is-open');
+  body.classList.remove('is-guardian-menu-open');
   setMenuExpanded(false);
   if(menuOpener?.isConnected) menuOpener.focus();
   menuOpener = null;
