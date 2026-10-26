@@ -28,6 +28,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
 body{
+  height:100vh;height:100dvh;
   background:#01020a;
   color:var(--white);
   font-family:var(--body);
@@ -185,7 +186,7 @@ body{
    THE SUN — bursts from upper-left, orbit view only
    ═══════════════════════════════════════════════════════ */
 .sun{
-  position:absolute;left:18%;top:18%;width:0;height:0;
+  position:absolute;left:18%;top:12%;width:0;height:0;
   pointer-events:none;opacity:0;
   transition:opacity 1.2s ease;
 }
@@ -236,9 +237,9 @@ body.is-orbit .sun{opacity:1}
 .planet-stage{
   position:absolute;
   left:50%;
-  bottom:-170vh;
-  width:240vh;height:240vh;
-  margin-left:-120vh;
+  bottom:calc(100% - 20vh - 240vw);
+  width:240vw;height:240vw;
+  margin-left:-120vw;
   transition:
     bottom 1.4s cubic-bezier(.7,0,.2,1),
     width 1.4s cubic-bezier(.7,0,.2,1),
@@ -248,16 +249,7 @@ body.is-orbit .sun{opacity:1}
     transform 1.4s cubic-bezier(.7,0,.2,1),
     opacity 1.4s ease;
 }
-body.is-menu .planet-stage{
-  left:26%;
-  bottom:50%;
-  width:560px;height:560px;
-  margin-left:-280px;
-  transform:translateY(50%);
-}
-/* No planet on showcase (last visited was Classified). Empty deep-space
-   view — orbit only; menu state still shows planets normally. */
-body.is-orbit.no-planet .planet-stage{opacity:0}
+body.is-destination-map .planet-stage{opacity:0;pointer-events:none}
 
 /* atmospheric rim — the bright blue arc */
 .planet-stage::before{
@@ -280,6 +272,7 @@ body.is-orbit .planet-stage::after{opacity:1}
   transition:opacity .9s cubic-bezier(.2,.7,.2,1);
 }
 .planet.is-active{opacity:1}
+body.is-warp-settling .planet{transition:none}
 .planet.is-active.spin{animation:spin 240s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
@@ -290,292 +283,70 @@ body.is-orbit .planet-stage::after{opacity:1}
   pointer-events:none;opacity:0;
   transition:opacity .9s ease;
 }
-body.is-menu .planet::before{opacity:1}
+body.is-orbit .planet::before{opacity:1}
 
-.p-earth{
-  background:
-    /* Clouds — distributed across the full sphere */
-    radial-gradient(ellipse 9% 3% at 14% 6%, rgba(255,255,255,.42) 0%, transparent 70%),
-    radial-gradient(ellipse 11% 4% at 32% 10%, rgba(255,255,255,.34) 0%, transparent 70%),
-    radial-gradient(ellipse 8% 3% at 52% 38%, rgba(255,255,255,.38) 0%, transparent 70%),
-    radial-gradient(ellipse 13% 4% at 68% 14%, rgba(255,255,255,.3) 0%, transparent 70%),
-    radial-gradient(ellipse 10% 4% at 84% 60%, rgba(255,255,255,.36) 0%, transparent 70%),
-    radial-gradient(ellipse 7% 3% at 24% 78%, rgba(255,255,255,.28) 0%, transparent 70%),
-    radial-gradient(ellipse 9% 3% at 58% 88%, rgba(255,255,255,.26) 0%, transparent 70%),
-    radial-gradient(ellipse 6% 2% at 78% 24%, rgba(255,255,255,.24) 0%, transparent 70%),
-    /* ANTARCTICA — icy polar cap at the very bottom */
-    radial-gradient(ellipse 30% 9% at 50% 94%, rgba(255,255,255,.95) 0%, rgba(240,248,255,.7) 55%, transparent 80%),
-    radial-gradient(ellipse 18% 6% at 28% 95%, rgba(248,252,255,.92) 0%, rgba(232,242,250,.55) 50%, transparent 78%),
-    radial-gradient(ellipse 18% 6% at 72% 95%, rgba(248,252,255,.92) 0%, rgba(232,242,250,.55) 50%, transparent 78%),
-    radial-gradient(ellipse 14% 5% at 40% 92%, rgba(255,255,255,.95) 0%, transparent 75%),
-    radial-gradient(ellipse 14% 5% at 60% 92%, rgba(255,255,255,.95) 0%, transparent 75%),
-    radial-gradient(ellipse 12% 4% at 16% 96%, rgba(228,238,248,.75) 0%, transparent 75%),
-    radial-gradient(ellipse 12% 4% at 84% 96%, rgba(228,238,248,.75) 0%, transparent 75%),
-    radial-gradient(ellipse 10% 3% at 50% 99%, rgba(218,232,244,.55) 0%, transparent 70%),
-    /* CONTINENT 1 — northwest (orbit-visible) */
-    radial-gradient(ellipse 22% 12% at 14% 12%, #2c8d6a 0%, #1f6a4e 55%, transparent 88%),
-    radial-gradient(ellipse 16% 9% at 24% 8%, #2a7c5e 0%, #1c5c44 55%, transparent 85%),
-    radial-gradient(ellipse 14% 9% at 10% 22%, #1f6a55 0%, #14503e 55%, transparent 82%),
-    radial-gradient(ellipse 12% 7% at 22% 20%, #2e8060 0%, #1c5840 55%, transparent 80%),
-    radial-gradient(ellipse 14% 8% at 18% 16%, #2a7c5e 0%, #1c5c44 55%, transparent 85%),
-    radial-gradient(ellipse 11% 6% at 8% 14%, #265e48 0%, transparent 78%),
-    radial-gradient(ellipse 12% 7% at 16% 10%, #2c8d6a 0%, transparent 82%),
-    radial-gradient(ellipse 10% 6% at 26% 14%, #1f6a55 0%, transparent 80%),
-    radial-gradient(ellipse 11% 7% at 14% 26%, #2a7c5e 0%, transparent 80%),
-    /* CONTINENT 2 — north central */
-    radial-gradient(ellipse 20% 11% at 38% 14%, #2c8d6a 0%, #1c5c44 55%, transparent 88%),
-    radial-gradient(ellipse 13% 8% at 44% 8%, #2a7c5e 0%, transparent 82%),
-    radial-gradient(ellipse 11% 7% at 36% 6%, #265e48 0%, transparent 80%),
-    radial-gradient(ellipse 12% 7% at 40% 22%, #2e8060 0%, transparent 80%),
-    radial-gradient(ellipse 13% 7% at 42% 16%, #2a7c5e 0%, #1c5c44 55%, transparent 85%),
-    radial-gradient(ellipse 11% 6% at 36% 18%, #1f6a55 0%, transparent 80%),
-    radial-gradient(ellipse 11% 6% at 32% 12%, #2c8d6a 0%, transparent 82%),
-    radial-gradient(ellipse 10% 6% at 46% 14%, #265e48 0%, transparent 80%),
-    radial-gradient(ellipse 11% 6% at 38% 26%, #2a7c5e 0%, transparent 80%),
-    /* CONTINENT 3 — center */
-    radial-gradient(ellipse 22% 12% at 54% 16%, #2c8d6a 0%, #1c5c44 55%, transparent 88%),
-    radial-gradient(ellipse 13% 7% at 60% 8%, #2a7c5e 0%, transparent 82%),
-    radial-gradient(ellipse 11% 6% at 48% 4%, #265e48 0%, transparent 80%),
-    radial-gradient(ellipse 12% 7% at 50% 24%, #2e8060 0%, transparent 80%),
-    radial-gradient(ellipse 14% 8% at 56% 22%, #2a7c5e 0%, #1c5c44 55%, transparent 85%),
-    radial-gradient(ellipse 12% 7% at 52% 12%, #1f6a55 0%, transparent 82%),
-    radial-gradient(ellipse 11% 6% at 58% 14%, #2c8d6a 0%, transparent 80%),
-    radial-gradient(ellipse 10% 5% at 46% 16%, #265e48 0%, transparent 78%),
-    radial-gradient(ellipse 11% 6% at 62% 22%, #2a7c5e 0%, transparent 80%),
-    /* CONTINENT 4 — east */
-    radial-gradient(ellipse 24% 13% at 76% 14%, #2a7c5e 0%, #1c5c44 55%, transparent 88%),
-    radial-gradient(ellipse 17% 10% at 86% 22%, #265e48 0%, #163e30 55%, transparent 85%),
-    radial-gradient(ellipse 12% 7% at 90% 12%, #2c8d6a 0%, transparent 80%),
-    radial-gradient(ellipse 11% 6% at 96% 18%, #1f6a55 0%, transparent 78%),
-    radial-gradient(ellipse 13% 7% at 80% 18%, #2e8060 0%, #1c5840 55%, transparent 82%),
-    radial-gradient(ellipse 11% 6% at 72% 22%, #2a7c5e 0%, transparent 80%),
-    radial-gradient(ellipse 12% 7% at 82% 10%, #2c8d6a 0%, transparent 82%),
-    radial-gradient(ellipse 10% 6% at 76% 24%, #265e48 0%, transparent 80%),
-    radial-gradient(ellipse 11% 6% at 92% 26%, #1f6a55 0%, transparent 78%),
-    /* Arid / desert patches in the top region */
-    radial-gradient(ellipse 11% 6% at 42% 18%, #a08454 0%, #6c5028 55%, transparent 82%),
-    radial-gradient(ellipse 8% 5% at 64% 20%, #8a6a3a 0%, transparent 78%),
-    radial-gradient(ellipse 9% 5% at 26% 16%, #94784a 0%, transparent 78%),
-    radial-gradient(ellipse 9% 5% at 56% 18%, #a08454 0%, transparent 78%),
-    radial-gradient(ellipse 8% 5% at 78% 14%, #94784a 0%, transparent 76%),
-    /* MID-LATITUDE — three continents, shapes clustered to merge */
-    /* Mid-West continent (Atlantic-like, x=14-32, y=32-50) */
-    radial-gradient(ellipse 16% 9% at 18% 34%, #2c8d6a 0%, #1c5c44 55%, transparent 88%),
-    radial-gradient(ellipse 14% 8% at 24% 42%, #2a7c5e 0%, #1c5c44 55%, transparent 85%),
-    radial-gradient(ellipse 12% 7% at 14% 46%, #1f6a55 0%, #14503e 55%, transparent 82%),
-    radial-gradient(ellipse 11% 6% at 28% 50%, #265e48 0%, transparent 80%),
-    radial-gradient(ellipse 13% 7% at 22% 38%, #2e8060 0%, #1c5840 55%, transparent 82%),
-    radial-gradient(ellipse 12% 7% at 18% 44%, #2a7c5e 0%, transparent 80%),
-    radial-gradient(ellipse 12% 7% at 16% 38%, #2c8d6a 0%, transparent 82%),
-    radial-gradient(ellipse 10% 6% at 30% 44%, #1f6a55 0%, transparent 80%),
-    radial-gradient(ellipse 11% 6% at 26% 48%, #265e48 0%, transparent 80%),
-    /* Mid-Central continent (Africa-like, x=42-58, y=36-54) */
-    radial-gradient(ellipse 17% 10% at 50% 42%, #2c8d6a 0%, #1c5c44 55%, transparent 88%),
-    radial-gradient(ellipse 13% 7% at 44% 50%, #1f6a55 0%, #14503e 55%, transparent 82%),
-    radial-gradient(ellipse 11% 6% at 56% 52%, #2e8060 0%, transparent 80%),
-    radial-gradient(ellipse 13% 7% at 48% 36%, #2a7c5e 0%, transparent 82%),
-    radial-gradient(ellipse 11% 6% at 52% 48%, #265e48 0%, transparent 80%),
-    radial-gradient(ellipse 11% 6% at 46% 44%, #2c8d6a 0%, transparent 82%),
-    radial-gradient(ellipse 10% 6% at 54% 38%, #1f6a55 0%, transparent 80%),
-    radial-gradient(ellipse 9% 5% at 50% 54%, #265e48 0%, transparent 78%),
-    /* Mid-East continent (Asia-like, x=68-92, y=36-54) */
-    radial-gradient(ellipse 18% 10% at 78% 40%, #2a7c5e 0%, #1c5c44 55%, transparent 88%),
-    radial-gradient(ellipse 14% 8% at 86% 48%, #2e8060 0%, #1c5840 55%, transparent 82%),
-    radial-gradient(ellipse 11% 6% at 70% 52%, #265e48 0%, transparent 80%),
-    radial-gradient(ellipse 13% 7% at 82% 46%, #1f6a55 0%, #14503e 55%, transparent 82%),
-    radial-gradient(ellipse 12% 7% at 74% 44%, #2c8d6a 0%, transparent 82%),
-    radial-gradient(ellipse 10% 6% at 90% 42%, #2a7c5e 0%, transparent 80%),
-    /* SOUTHERN HEMISPHERE — three continents bridged into one connected band */
-    /* South-West continent (S.America-like, x=14-30, y=62-88) */
-    radial-gradient(ellipse 14% 8% at 22% 64%, #2c8d6a 0%, #1c5c44 55%, transparent 88%),
-    radial-gradient(ellipse 12% 7% at 18% 74%, #1f5c46 0%, #143e30 55%, transparent 85%),
-    radial-gradient(ellipse 11% 6% at 24% 82%, #2a6a52 0%, #1a4a38 55%, transparent 82%),
-    radial-gradient(ellipse 9% 5% at 16% 88%, #265e48 0%, transparent 78%),
-    radial-gradient(ellipse 12% 7% at 20% 70%, #2a7c5e 0%, transparent 82%),
-    radial-gradient(ellipse 11% 6% at 22% 78%, #1f6a55 0%, transparent 80%),
-    radial-gradient(ellipse 11% 6% at 26% 68%, #2c8d6a 0%, transparent 80%),
-    radial-gradient(ellipse 9% 5% at 20% 84%, #265e48 0%, transparent 78%),
-    radial-gradient(ellipse 8% 5% at 14% 80%, #1f5c46 0%, transparent 78%),
-    /* Far-west extension into x=2-14 */
-    radial-gradient(ellipse 10% 6% at 8% 70%, #2a7c5e 0%, transparent 80%),
-    radial-gradient(ellipse 9% 5% at 6% 80%, #265e48 0%, transparent 78%),
-    /* Bridge: South-West → South-Central, x=28-44 */
-    radial-gradient(ellipse 11% 6% at 30% 66%, #2a7c5e 0%, #1c5c44 55%, transparent 82%),
-    radial-gradient(ellipse 12% 7% at 36% 72%, #2c8d6a 0%, #1c5c44 55%, transparent 85%),
-    radial-gradient(ellipse 11% 6% at 32% 80%, #1f6a55 0%, transparent 80%),
-    radial-gradient(ellipse 10% 6% at 40% 84%, #265e48 0%, transparent 78%),
-    radial-gradient(ellipse 9% 5% at 36% 90%, #1f5c46 0%, transparent 78%),
-    /* South-Central continent (Africa-south-like, x=42-58, y=66-88) */
-    radial-gradient(ellipse 15% 9% at 50% 70%, #2c8d6a 0%, #1c5c44 55%, transparent 88%),
-    radial-gradient(ellipse 12% 7% at 46% 80%, #1f6a55 0%, transparent 82%),
-    radial-gradient(ellipse 11% 6% at 54% 86%, #265e48 0%, transparent 80%),
-    radial-gradient(ellipse 13% 7% at 52% 76%, #2a7c5e 0%, #1c5c44 55%, transparent 82%),
-    radial-gradient(ellipse 10% 5% at 48% 84%, #1f5c46 0%, transparent 78%),
-    radial-gradient(ellipse 11% 6% at 56% 74%, #2c8d6a 0%, transparent 80%),
-    radial-gradient(ellipse 9% 5% at 44% 76%, #265e48 0%, transparent 78%),
-    radial-gradient(ellipse 9% 5% at 50% 88%, #1f6a55 0%, transparent 78%),
-    /* Bridge: South-Central → South-East, x=58-70 */
-    radial-gradient(ellipse 11% 6% at 60% 68%, #2a7c5e 0%, #1c5c44 55%, transparent 82%),
-    radial-gradient(ellipse 12% 7% at 64% 74%, #2c8d6a 0%, #1c5c44 55%, transparent 85%),
-    radial-gradient(ellipse 10% 6% at 62% 82%, #1f6a55 0%, transparent 80%),
-    radial-gradient(ellipse 9% 5% at 66% 86%, #265e48 0%, transparent 78%),
-    /* South-East continent (Australia-like, x=68-90, y=66-84) */
-    radial-gradient(ellipse 16% 9% at 78% 70%, #2a7c5e 0%, #1c5c44 55%, transparent 88%),
-    radial-gradient(ellipse 13% 7% at 86% 78%, #2e8060 0%, #1c5840 55%, transparent 82%),
-    radial-gradient(ellipse 11% 6% at 70% 80%, #1f6a55 0%, transparent 80%),
-    radial-gradient(ellipse 12% 7% at 76% 80%, #265e48 0%, transparent 82%),
-    radial-gradient(ellipse 11% 6% at 80% 76%, #2c8d6a 0%, transparent 80%),
-    radial-gradient(ellipse 10% 6% at 84% 84%, #2a7c5e 0%, transparent 80%),
-    radial-gradient(ellipse 10% 6% at 74% 74%, #2c8d6a 0%, transparent 80%),
-    radial-gradient(ellipse 9% 5% at 88% 72%, #1f6a55 0%, transparent 78%),
-    /* Far-east extension into x=88-98 */
-    radial-gradient(ellipse 10% 6% at 92% 72%, #265e48 0%, transparent 80%),
-    radial-gradient(ellipse 9% 5% at 96% 82%, #2a7c5e 0%, transparent 78%),
-    /* Southern arid patches — break up the green */
-    radial-gradient(ellipse 9% 5% at 38% 78%, #94784a 0%, transparent 78%),
-    radial-gradient(ellipse 8% 5% at 70% 76%, #8a6a3a 0%, transparent 78%),
-    /* Sun-lit warm glow */
-    radial-gradient(circle at 28% 22%, rgba(255,200,140,.18) 0%, transparent 30%),
-    /* Base ocean */
-    radial-gradient(circle at 32% 32%, #4a92d8 0%, #2456a0 35%, #103860 65%, #04132c 100%);
-}
-.p-moon{
-  background:
-    /* === TYCHO RAY SYSTEM — bright streaks radiating from impact === */
-    radial-gradient(ellipse 3% 36% at 38% 62%, rgba(220,222,232,.38) 0%, rgba(220,222,232,.15) 45%, transparent 70%),
-    radial-gradient(ellipse 36% 3% at 38% 62%, rgba(220,222,232,.38) 0%, rgba(220,222,232,.15) 45%, transparent 70%),
-    radial-gradient(ellipse 2.5% 22% at 30% 48%, rgba(220,222,232,.22) 0%, transparent 65%),
-    radial-gradient(ellipse 2.5% 22% at 46% 78%, rgba(220,222,232,.22) 0%, transparent 65%),
-    radial-gradient(ellipse 22% 2.5% at 22% 70%, rgba(220,222,232,.22) 0%, transparent 65%),
-    radial-gradient(ellipse 22% 2.5% at 54% 56%, rgba(220,222,232,.22) 0%, transparent 65%),
-    /* === PROMINENT BRIGHT-RIM CRATERS === */
-    /* Tycho — bright center, dark bowl */
-    radial-gradient(ellipse 4% 4% at 38% 62%, #e8eaf2 0%, #98a0b0 32%, #2a2c36 58%, transparent 72%),
-    /* Copernicus-like (north central) */
-    radial-gradient(ellipse 3.5% 3.5% at 50% 34%, #d4d6e0 0%, #6a6e7c 42%, #2a2c36 65%, transparent 76%),
-    /* Kepler-like (west) */
-    radial-gradient(ellipse 2.5% 2.5% at 25% 30%, #d0d2dc 0%, #5a5d6a 50%, #28293a 70%, transparent 78%),
-    /* Aristarchus-like (very bright, NW) */
-    radial-gradient(ellipse 2% 2% at 18% 38%, #e8eaf2 0%, #98a0b0 50%, transparent 75%),
-    /* Plato-like (top) */
-    radial-gradient(ellipse 3% 3% at 42% 12%, #28293a 0%, #5a5d6a 70%, transparent 80%),
-    /* === SMALL & MEDIUM CRATERS — top region === */
-    radial-gradient(ellipse 1.5% 1.5% at 12% 16%, #2a2c36 0%, transparent 65%),
-    radial-gradient(ellipse 2% 2% at 22% 12%, #2c2e38 0%, transparent 65%),
-    radial-gradient(ellipse 1.2% 1.2% at 28% 22%, #2a2c36 0%, transparent 65%),
-    radial-gradient(ellipse 2.5% 2.5% at 35% 8%, #28293a 0%, transparent 65%),
-    radial-gradient(ellipse 1.8% 1.8% at 44% 22%, #2a2c36 0%, transparent 65%),
-    radial-gradient(ellipse 1.5% 1.5% at 58% 14%, #2c2e38 0%, transparent 65%),
-    radial-gradient(ellipse 2% 2% at 65% 22%, #2a2c36 0%, transparent 65%),
-    radial-gradient(ellipse 1.5% 1.5% at 75% 14%, #2a2c36 0%, transparent 65%),
-    radial-gradient(ellipse 2.2% 2.2% at 82% 24%, #28293a 0%, transparent 65%),
-    radial-gradient(ellipse 1.5% 1.5% at 90% 18%, #2c2e38 0%, transparent 65%),
-    /* === SMALL & MEDIUM CRATERS — mid region === */
-    radial-gradient(ellipse 1.8% 1.8% at 8% 42%, #2a2c36 0%, transparent 65%),
-    radial-gradient(ellipse 2% 2% at 16% 50%, #2a2c36 0%, transparent 65%),
-    radial-gradient(ellipse 1.4% 1.4% at 28% 40%, #2c2e38 0%, transparent 65%),
-    radial-gradient(ellipse 2.5% 2.5% at 60% 50%, #28293a 0%, transparent 65%),
-    radial-gradient(ellipse 1.5% 1.5% at 70% 42%, #2a2c36 0%, transparent 65%),
-    radial-gradient(ellipse 1.8% 1.8% at 84% 44%, #2c2e38 0%, transparent 65%),
-    radial-gradient(ellipse 1.5% 1.5% at 92% 52%, #2a2c36 0%, transparent 65%),
-    /* === SMALL & MEDIUM CRATERS — bottom region === */
-    radial-gradient(ellipse 2% 2% at 10% 70%, #2a2c36 0%, transparent 65%),
-    radial-gradient(ellipse 1.5% 1.5% at 22% 78%, #2c2e38 0%, transparent 65%),
-    radial-gradient(ellipse 2.5% 2.5% at 32% 86%, #28293a 0%, transparent 65%),
-    radial-gradient(ellipse 1.5% 1.5% at 50% 82%, #2a2c36 0%, transparent 65%),
-    radial-gradient(ellipse 1.8% 1.8% at 58% 74%, #2c2e38 0%, transparent 65%),
-    radial-gradient(ellipse 2% 2% at 68% 86%, #2a2c36 0%, transparent 65%),
-    radial-gradient(ellipse 1.5% 1.5% at 78% 78%, #2c2e38 0%, transparent 65%),
-    radial-gradient(ellipse 1.8% 1.8% at 86% 70%, #2a2c36 0%, transparent 65%),
-    radial-gradient(ellipse 1.2% 1.2% at 92% 84%, #2c2e38 0%, transparent 65%),
-    /* === MARIA — large dark "seas" === */
-    /* Mare Frigoris (far north, elongated band) */
-    radial-gradient(ellipse 32% 6% at 50% 12%, #4a4d5c 0%, #5e6172 55%, transparent 78%),
-    /* Mare Marginis (NW edge) */
-    radial-gradient(ellipse 13% 9% at 12% 22%, #4a4d5c 0%, #5e6172 55%, transparent 76%),
-    /* NE edge mare */
-    radial-gradient(ellipse 11% 8% at 90% 20%, #45485a 0%, #5e6172 55%, transparent 75%),
-    /* Mare Imbrium (NW) — enlarged */
-    radial-gradient(ellipse 24% 15% at 30% 30%, #4a4d5c 0%, #5e6172 55%, transparent 80%),
-    /* Mare Serenitatis (mid-east upper) */
-    radial-gradient(ellipse 14% 10% at 60% 28%, #4a4d5c 0%, #5e6172 55%, transparent 75%),
-    /* Mare Tranquillitatis (center mid) */
-    radial-gradient(ellipse 16% 11% at 56% 44%, #4a4d5c 0%, #5e6172 55%, transparent 76%),
-    /* Mare Crisium (east mid) */
-    radial-gradient(ellipse 11% 9% at 80% 36%, #45485a 0%, #5e6172 55%, transparent 75%),
-    /* Far-west edge mare (Oceanus Procellarum extension) */
-    radial-gradient(ellipse 10% 12% at 8% 48%, #4a4d5c 0%, #5e6172 55%, transparent 75%),
-    /* Far-east edge mare (Mare Smythii extension) */
-    radial-gradient(ellipse 9% 11% at 93% 52%, #45485a 0%, #5e6172 55%, transparent 75%),
-    /* Mare Humorum (south west) */
-    radial-gradient(ellipse 12% 9% at 22% 60%, #4a4d5c 0%, #5e6172 55%, transparent 75%),
-    /* Mare Nubium / Cognitum (south central) — enlarged */
-    radial-gradient(ellipse 22% 14% at 48% 70%, #4a4d5c 0%, #5e6172 55%, transparent 80%),
-    /* Mare Smythii / Ingenii area (south east) */
-    radial-gradient(ellipse 12% 9% at 72% 64%, #4a4d5c 0%, #5e6172 55%, transparent 75%),
-    /* SW edge mare */
-    radial-gradient(ellipse 11% 9% at 14% 78%, #4a4d5c 0%, #5e6172 55%, transparent 75%),
-    /* SE edge mare */
-    radial-gradient(ellipse 12% 9% at 86% 78%, #45485a 0%, #5e6172 55%, transparent 76%),
-    /* Mare Australe (far south band) */
-    radial-gradient(ellipse 22% 6% at 50% 88%, #4a4d5c 0%, #5e6172 55%, transparent 78%),
-    /* === SUBTLE HIGHLAND BRIGHTNESS === */
-    radial-gradient(ellipse 24% 18% at 24% 78%, rgba(208,210,220,.18) 0%, transparent 70%),
-    radial-gradient(ellipse 20% 15% at 82% 80%, rgba(208,210,220,.14) 0%, transparent 70%),
-    radial-gradient(ellipse 18% 13% at 70% 16%, rgba(208,210,220,.12) 0%, transparent 70%),
-    /* === BASE LUNAR SURFACE === */
-    radial-gradient(circle at 35% 30%, #b8bac5 0%, #98a0b0 45%, #6a6e7c 80%, #3a3d4a 100%);
-}
-.p-venus{
-  background:
-    repeating-linear-gradient(178deg,
-      rgba(255,180,90,0) 0px, rgba(255,180,90,0) 22px,
-      rgba(255,140,60,.18) 24px, rgba(255,140,60,0) 40px),
-    radial-gradient(circle at 30% 30%, #f7c98a 0%, #e09a4e 35%, #b86a26 60%, #5a2c0c 100%);
-}
-.p-mars{
-  background:
-    radial-gradient(ellipse 18% 14% at 22% 32%, #b94a2a 0%, transparent 60%),
-    radial-gradient(ellipse 14% 11% at 50% 48%, #8a3320 0%, transparent 70%),
-    radial-gradient(ellipse 10% 8% at 40% 70%, #d6e0e8 0%, transparent 80%),
-    radial-gradient(ellipse 16% 12% at 70% 38%, #a03820 0%, transparent 65%),
-    radial-gradient(circle at 32% 32%, #e08050 0%, #b03e1c 35%, #6a1a08 70%, #1c0604 100%);
-}
-.p-reef{
-  background:
-    radial-gradient(ellipse 16% 12% at 24% 32%, #b078d8 0%, transparent 70%),
-    radial-gradient(ellipse 11% 9% at 50% 50%, #7a4ab8 0%, transparent 70%),
-    radial-gradient(ellipse 8% 6% at 38% 70%, #d8c4f0 0%, transparent 80%),
-    radial-gradient(ellipse 14% 10% at 70% 38%, #8856c0 0%, transparent 70%),
-    radial-gradient(circle at 32% 32%, #a878d8 0%, #6a3aa8 35%, #361870 70%, #100428 100%);
-}
-.p-classified{
-  background:
-    radial-gradient(circle 3% at 50% 50%, rgba(220,40,40,.55) 0%, transparent 80%),
-    radial-gradient(circle at 32% 32%, #2e2630 0%, #181420 50%, #06030c 100%);
-  filter:contrast(1.2) saturate(.5);
-}
+.p-earth{background-image:url("media/planet-earth.jpg");background-size:cover;background-position:center;}
+.p-moon{background-image:url("media/planet-moon.jpg");background-size:cover;background-position:center;}
+.p-venus{background-image:url("media/planet-venus.jpg");background-size:cover;background-position:center;}
+.p-mars{background-image:url("media/planet-mars.jpg");background-size:cover;background-position:center;}
+.p-reef{background-image:url("media/planet-reef.jpg");background-size:cover;background-position:center;}
+.p-classified{background-image:url("media/planet-classified.jpg");background-size:cover;background-position:center;filter:contrast(1.2) saturate(.5);}
 
 /* ═══════════════════════════════════════════════════════
-   THE SHIP — stylized SVG jumpship, present in both views
+   THE SHIP — Destiny-inspired jumpship, present in both views
    ═══════════════════════════════════════════════════════ */
 .ship-stage{
   position:absolute;
   left:50%;top:54%;
-  width:720px;height:400px;
-  margin-left:-360px;margin-top:-200px;
+  width:min(920px,88vw);height:min(560px,54vw);
+  margin:0;
+  transform:translate(-50%,-50%);
   z-index:5;
   pointer-events:none;
   transition:transform 1.4s cubic-bezier(.7,0,.2,1), opacity 1s ease;
   filter:drop-shadow(0 30px 60px rgba(0,0,0,.6));
 }
-body.is-menu .ship-stage{
-  transform:translate(60px,-90px) scale(.2);
-}
-.ship-stage svg{width:100%;height:100%;display:block;overflow:visible}
+body.is-destination-map .ship-stage{opacity:0}
+.ship-stage svg,.ship-stage img{position:relative;z-index:1;width:100%;height:100%;display:block;overflow:visible}
 .ship-fly{
-  width:100%;height:100%;
+  position:relative;width:100%;height:100%;
   animation:shipFlyIn 4s cubic-bezier(.22,.61,.36,1) 5s backwards;
+}
+.ship-bob{position:relative}
+.ship-effects{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:visible}
+.engine-halo{
+  position:absolute;width:16%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,235,186,.92) 0%,rgba(255,146,57,.58) 27%,rgba(67,178,255,.34) 55%,transparent 74%);
+  filter:blur(15px);mix-blend-mode:screen;opacity:0;
+  animation:podGlowSettle 8s ease-out 5s forwards;
+}
+.engine-pod-a{left:58.2%;top:28%;transform:translate(-50%,-50%)}
+.engine-pod-b{left:31.2%;top:70%;transform:translate(-50%,-50%)}
+.engine-fire{
+  position:absolute;width:21%;height:10%;border-radius:50%;
+  background:radial-gradient(ellipse at 100% 50%,#fff 0%,#fff0bd 9%,#ffbd4d 20%,#ff6d2e 39%,rgba(70,172,255,.42) 63%,transparent 83%);
+  filter:blur(5px);mix-blend-mode:screen;opacity:0;
+  transform-origin:100% 50%;
+  animation:thrusterBurn 8s ease-in-out 5s both;
+}
+.engine-fire::after{
+  content:"";position:absolute;right:0;top:50%;width:20%;height:27%;
+  border-radius:50%;background:#fff7d8;filter:blur(4px);transform:translateY(-50%);
+}
+.engine-fire-a{left:37.2%;top:23%;transform:rotate(16deg) scaleX(.4)}
+.engine-fire-b{left:10.2%;top:65%;transform:rotate(16deg) scaleX(.4)}
+@keyframes thrusterBurn{
+  0%{opacity:0;transform:rotate(16deg) scaleX(.35)}
+  6%{opacity:1;transform:rotate(16deg) scaleX(1.15)}
+  24%{opacity:.96;transform:rotate(16deg) scaleX(1)}
+  58%{opacity:.56;transform:rotate(16deg) scaleX(.72)}
+  100%{opacity:0;transform:rotate(16deg) scaleX(.18)}
+}
+@keyframes podGlowSettle{
+  0%{opacity:0}
+  12%{opacity:.86}
+  45%{opacity:.42}
+  100%{opacity:.42}
 }
 @keyframes shipFlyIn{
   0%{transform:translateX(-110vw)}
@@ -597,8 +368,8 @@ body.is-menu .ship-stage{
   transform-origin:52% 50%;
 }
 @keyframes bob{
-  0%{transform:rotate(9.52deg) translate(0,0)}
-  100%{transform:rotate(10.48deg) translate(0,-7.2px)}
+  0%{transform:rotate(-1deg) translate(0,0)}
+  100%{transform:rotate(1deg) translate(0,-7.2px)}
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -614,14 +385,19 @@ body.is-menu .ship-stage{
   pointer-events:none;
   z-index:5;
   transform:translateX(0);
-  transition:transform 1s cubic-bezier(.5,0,.5,1);
 }
-body.is-warp-out-flying .ship-warp-wrapper,
+body.is-warp-out-flying .ship-warp-wrapper{
+  animation:warpFlyOut 1s cubic-bezier(.5,0,.5,1) forwards;
+}
 body.is-warp-lightspeed .ship-warp-wrapper{
   transform:translateX(125vw);
 }
 body.is-warp-in-flying .ship-warp-wrapper{
   animation:warpFlyBackIn 1.5s cubic-bezier(.2,.7,.2,1) forwards;
+}
+@keyframes warpFlyOut{
+  0%{transform:translateX(0)}
+  100%{transform:translateX(125vw)}
 }
 @keyframes warpFlyBackIn{
   0%{transform:translateX(-125vw)}
@@ -657,7 +433,7 @@ body.is-warp-settling .trails{
    LIGHTSPEED — back-view ship + animated streaks
    ═══════════════════════════════════════════════════════ */
 .lightspeed{
-  position:fixed;inset:0;z-index:4;
+  position:fixed;inset:0;z-index:6;
   pointer-events:none;
   opacity:0;
   transition:opacity .8s ease;
@@ -971,6 +747,41 @@ body.is-orbit .dest-btn{opacity:1;pointer-events:auto}
 .dest-btn:hover .globe::after{border-color:var(--gold)}
 .dest-btn:hover .globe span{background:var(--gold)}
 
+/* Selected destination briefing stays on the current orbit scene. */
+.destination-briefing{
+  position:absolute;left:clamp(20px,3vw,42px);right:clamp(20px,3vw,42px);bottom:clamp(24px,3vw,42px);
+  z-index:16;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
+  opacity:0;pointer-events:none;transform:translateY(10px);
+  transition:opacity .45s ease,transform .45s cubic-bezier(.2,.7,.2,1);
+}
+body.is-briefing .destination-briefing{opacity:1;pointer-events:auto;transform:translateY(0)}
+body.is-briefing .dest-btn{opacity:0;pointer-events:none}
+body.is-warp-lightspeed .destination-briefing{opacity:0;visibility:hidden;pointer-events:none;transition:none}
+body.is-warp-bright .dest-btn,
+body.is-warp-out-flying .dest-btn,
+body.is-warp-lightspeed .dest-btn,
+body.is-warp-in-flying .dest-btn,
+body.is-warp-settling .dest-btn{opacity:0;pointer-events:none}
+body.is-warp-bright .prompts,
+body.is-warp-out-flying .prompts,
+body.is-warp-lightspeed .prompts,
+body.is-warp-in-flying .prompts,
+body.is-warp-settling .prompts{opacity:0;visibility:hidden;pointer-events:none}
+.briefing-copy{max-width:min(62vw,780px);text-shadow:0 2px 24px rgba(0,0,0,.85)}
+.briefing-kicker{font-family:var(--mono);font-size:10px;letter-spacing:.28em;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
+.briefing-title{font-family:var(--display);font-weight:600;font-size:clamp(34px,5vw,72px);line-height:.94;letter-spacing:.08em;color:var(--white);text-transform:uppercase;overflow-wrap:anywhere}
+.briefing-location{font-family:var(--body);font-size:15px;letter-spacing:.08em;color:rgba(236,239,245,.78);margin-top:10px}
+.briefing-rule{width:min(100%,640px);height:1px;background:linear-gradient(90deg,rgba(236,239,245,.65),rgba(201,169,110,.45),transparent);margin-top:14px}
+.brief-launch{
+  flex:0 0 auto;min-width:210px;padding:15px 30px;
+  border:1px solid rgba(151,221,183,.72);background:rgba(35,114,78,.84);color:#f2fff7;
+  font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:.38em;text-transform:uppercase;
+  cursor:pointer;box-shadow:0 0 24px rgba(32,131,85,.18);transition:background .2s ease,border-color .2s ease,transform .2s ease;
+}
+.brief-launch:hover{background:rgba(49,145,99,.96);border-color:#c2f3d3;transform:translateY(-2px)}
+.brief-launch:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.brief-launch:focus-visible{outline:2px solid #c2f3d3;outline-offset:4px}
+
 /* ═══════════════════════════════════════════════════════
    PROMPT BAR (bottom-right) — controller-style hints
    ═══════════════════════════════════════════════════════ */
@@ -981,7 +792,8 @@ body.is-orbit .dest-btn{opacity:1;pointer-events:auto}
   color:var(--grey);text-transform:uppercase;
   transition:opacity .4s ease;
 }
-body.is-menu .prompts{opacity:0;pointer-events:none}
+body.is-destination-map .prompts{opacity:0;pointer-events:none}
+body.is-briefing .prompts{opacity:0;visibility:hidden;pointer-events:none}
 .prompt{display:flex;align-items:center;gap:8px}
 .kbd{
   border:1px solid var(--gold-dim);color:var(--gold);
@@ -1002,7 +814,7 @@ body.is-menu .prompts{opacity:0;pointer-events:none}
   text-align:center;pointer-events:none;z-index:11;
   opacity:0;transition:opacity .8s ease;
 }
-body.is-menu .center-title{opacity:1}
+body.is-destination-map .center-title{opacity:1}
 .center-title .ct-main{
   font-family:var(--display);font-weight:300;font-size:14px;letter-spacing:.55em;
   color:var(--white);
@@ -1017,17 +829,19 @@ body.is-menu .center-title{opacity:1}
    DESTINATION PANEL — slides in for menu state
    ═══════════════════════════════════════════════════════ */
 .dest-panel{
-  position:absolute;top:50%;right:36px;transform:translate(420px,-50%);
-  width:380px;
-  background:var(--panel);
-  border:1px solid var(--panel-edge);
-  padding:22px 22px 26px;
+  position:fixed;inset:0;
+  display:flex;flex-direction:column;
+  padding:max(22px,env(safe-area-inset-top)) max(22px,env(safe-area-inset-right)) max(22px,env(safe-area-inset-bottom)) max(22px,env(safe-area-inset-left));
+  background:
+    radial-gradient(ellipse 48% 42% at 50% 52%, rgba(91,200,216,.06), transparent 72%),
+    linear-gradient(180deg, rgba(1,2,10,.62), rgba(1,2,10,.12) 28%, rgba(1,2,10,.14) 76%, rgba(1,2,10,.72));
+  border:1px solid rgba(201,169,110,.16);
   z-index:20;
-  backdrop-filter:blur(8px);
-  opacity:0;pointer-events:none;
-  transition:transform 1s cubic-bezier(.2,.7,.2,1), opacity .8s ease;
+  opacity:0;pointer-events:none;visibility:hidden;
+  transform:translateY(8px);
+  transition:transform .55s cubic-bezier(.2,.7,.2,1), opacity .45s ease, visibility .45s;
 }
-body.is-menu .dest-panel{transform:translate(0,-50%);opacity:1;pointer-events:auto}
+body.is-destination-map .dest-panel{transform:translateY(0);opacity:1;visibility:visible}
 
 .bracket{position:absolute;width:18px;height:18px;border:1px solid var(--gold)}
 .bk-tl{top:-1px;left:-1px;border-right:none;border-bottom:none}
@@ -1037,8 +851,7 @@ body.is-menu .dest-panel{transform:translate(0,-50%);opacity:1;pointer-events:au
 
 .panel-head{
   display:flex;align-items:center;justify-content:space-between;
-  padding-bottom:10px;border-bottom:1px solid var(--gold-dim);
-  margin-bottom:14px;
+  padding:0 2px 12px;border-bottom:1px solid rgba(201,169,110,.42);
 }
 .panel-head .ph-l{
   font-family:var(--display);font-weight:500;font-size:13px;letter-spacing:.32em;
@@ -1048,63 +861,78 @@ body.is-menu .dest-panel{transform:translate(0,-50%);opacity:1;pointer-events:au
   font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:var(--grey);
 }
 
-.dest-list{display:flex;flex-direction:column}
+.dest-list{position:relative;flex:1;min-height:0;overflow:hidden;pointer-events:none}
 .dest-row{
-  display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:14px;
-  padding:13px 8px 13px 4px;
-  cursor:none;
-  border-left:2px solid transparent;
-  transition:background .25s ease, border-color .25s ease, padding .25s ease;
-  position:relative;
+  position:absolute;left:var(--map-x);top:var(--map-y);
+  transform:translate(-50%,-50%);
+  width:clamp(108px,15vw,174px);padding:8px 5px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:var(--white);text-align:center;font:inherit;
+  background:transparent;border:0;pointer-events:auto;cursor:pointer;
+  transition:opacity .25s ease, transform .25s ease;
 }
-.dest-row + .dest-row{border-top:1px solid rgba(201,169,110,.10)}
-.dest-row::before{
-  content:'';position:absolute;left:0;top:50%;width:0;height:1px;background:var(--gold);
-  transition:width .35s cubic-bezier(.2,.7,.2,1);
+.dest-row:hover,.dest-row.is-hover,.dest-row:focus-visible{transform:translate(-50%,-50%) scale(1.045)}
+.dest-row:focus-visible{outline:1px solid var(--gold);outline-offset:4px}
+.dest-row.is-current::after{
+  content:'CURRENT ORBIT';
+  position:absolute;top:calc(100% - 2px);
+  font-family:var(--mono);font-size:8px;letter-spacing:.22em;color:var(--teal);
+  white-space:nowrap;
 }
-.dest-row:hover,.dest-row.is-hover{
-  background:rgba(201,169,110,.06);
-  border-left-color:var(--gold);
-  padding-left:10px;
-}
-.dest-row:hover::before,.dest-row.is-hover::before{width:6px}
 
 .dot{
-  width:26px;height:26px;border-radius:50%;
+  width:clamp(58px,8.4vw,108px);height:clamp(58px,8.4vw,108px);border-radius:50%;
   position:relative;
-  box-shadow:0 0 12px rgba(0,0,0,.6) inset, 0 0 8px rgba(255,255,255,.04);
+  box-shadow:0 0 18px rgba(0,0,0,.65) inset, 0 0 26px rgba(91,200,216,.12);
+  transition:box-shadow .3s ease, filter .3s ease;
 }
 .dot::after{
   content:'';position:absolute;inset:-5px;border-radius:50%;
-  border:1px solid var(--gold-dim);opacity:0;
-  transition:opacity .25s, transform .25s;
-  transform:scale(.85);
+  border:1px solid rgba(201,169,110,.65);opacity:0;
+  box-shadow:0 0 0 5px rgba(201,169,110,.06),0 0 22px rgba(201,169,110,.12);
+  transition:opacity .25s ease, transform .25s ease;transform:scale(.88);
 }
-.dest-row:hover .dot::after,.dest-row.is-hover .dot::after{opacity:1;transform:scale(1)}
-.d-earth{background:radial-gradient(circle at 30% 30%, #5fa3d6, #1c3d6a 70%)}
-.d-moon{background:radial-gradient(circle at 30% 30%, #b4b8c4, #4d5260 70%)}
-.d-venus{background:radial-gradient(circle at 30% 30%, #f5c98a, #8a4818 70%)}
-.d-mars{background:radial-gradient(circle at 30% 30%, #d56a3a, #5a1a08 70%)}
-.d-reef{background:radial-gradient(circle at 30% 30%, #b078d8, #381a64 70%)}
-.d-classified{background:radial-gradient(circle at 50% 50%, #2a2226, #06030c 75%);box-shadow:0 0 12px rgba(0,0,0,.6) inset, 0 0 4px rgba(220,40,40,.3)}
+.dest-row:hover .dot::after,.dest-row.is-hover .dot::after,.dest-row:focus-visible .dot::after{opacity:1;transform:scale(1)}
+.dest-row.is-current .dot::after{opacity:.6;transform:scale(1)}
+.dest-row.is-hover .dot,.dest-row:focus-visible .dot{box-shadow:0 0 20px rgba(0,0,0,.65) inset,0 0 34px rgba(201,169,110,.28);filter:brightness(1.12)}
+.d-earth{background-image:url("media/planet-earth.jpg");background-size:cover;background-position:center;}
+.d-moon{background-image:url("media/planet-moon.jpg");background-size:cover;background-position:center;}
+.d-venus{background-image:url("media/planet-venus.jpg");background-size:cover;background-position:center;}
+.d-mars{background-image:url("media/planet-mars.jpg");background-size:cover;background-position:center;}
+.d-reef{background-image:url("media/planet-reef.jpg");background-size:cover;background-position:center;}
+.d-classified{background-image:url("media/planet-classified.jpg");background-size:cover;background-position:center;box-shadow:0 0 12px rgba(0,0,0,.6) inset, 0 0 4px rgba(220,40,40,.3);}
 
 .dest-text{display:flex;flex-direction:column;gap:2px;min-width:0}
 .dest-world{
-  font-family:var(--display);font-weight:500;font-size:15px;letter-spacing:.18em;
+  font-family:var(--display);font-weight:500;font-size:clamp(11px,1.05vw,15px);letter-spacing:.3em;
   color:var(--white);text-transform:uppercase;
 }
 .dest-loc{
-  font-family:var(--body);font-weight:400;font-size:12px;letter-spacing:.05em;
+  font-family:var(--body);font-weight:400;font-size:11px;letter-spacing:.08em;
   color:var(--grey);
 }
 .dest-tag{
-  font-family:var(--mono);font-size:9px;letter-spacing:.22em;color:var(--gold);
+  font-family:var(--mono);font-size:8px;letter-spacing:.2em;color:var(--gold);
   text-transform:uppercase;white-space:nowrap;opacity:.85;
 }
 
+.map-orbits{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.48}
+.map-orbits ellipse,.map-orbits path{fill:none;stroke:rgba(145,166,187,.24);stroke-width:1;vector-effect:non-scaling-stroke}
+.map-orbits .orbit-accent{stroke:rgba(201,169,110,.2);stroke-dasharray:2 8}
+.tower-marker{position:absolute;left:50%;top:20%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;color:var(--white);font-family:var(--display);pointer-events:auto;text-shadow:0 0 12px rgba(220,232,242,.6);z-index:2}
+.tower-trigger{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:84px;min-height:48px;padding:0;background:transparent;border:0;color:inherit;font:inherit;cursor:pointer;list-style:none}
+.tower-trigger::-webkit-details-marker,.tower-trigger::marker{display:none;content:""}
+.tower-trigger:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.tower-sphere{width:clamp(29px,4.2vw,54px);aspect-ratio:1;border:1px solid rgba(238,244,249,.9);border-radius:50%;background:radial-gradient(circle at 32% 25%,#fff 0 9%,#e8edf0 34%,#cbd4da 65%,#8796a2 100%);box-shadow:inset -7px -6px 12px rgba(44,58,70,.35),0 0 10px rgba(225,238,248,.55),0 0 25px rgba(197,220,239,.25)}
+.tower-label{font-size:9px;letter-spacing:.25em;white-space:nowrap}
+.tower-links{position:absolute;top:calc(100% + 5px);left:50%;transform:translateX(-50%);display:none;flex-direction:column;gap:4px;padding:5px;background:rgba(2,4,12,.94);border:1px solid rgba(201,169,110,.55);pointer-events:auto}
+.tower-marker[open] .tower-links{display:flex}
+.tower-links a{display:flex;align-items:center;justify-content:center;min-width:96px;min-height:44px;padding:6px 10px;color:var(--gold);font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-decoration:none;border:1px solid rgba(201,169,110,.3)}
+.tower-links a:hover,.tower-links a:focus-visible{color:var(--white);border-color:var(--white);outline:none}
+
 .panel-foot{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-top:14px;padding-top:10px;border-top:1px solid var(--gold-dim);
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  min-height:42px;padding:10px 2px 0;border-top:1px solid rgba(201,169,110,.28);
   font-family:var(--mono);font-size:9px;letter-spacing:.28em;color:var(--grey);
 }
 .panel-foot .pf-r{color:var(--teal)}
@@ -1113,21 +941,18 @@ body.is-menu .dest-panel{transform:translate(0,-50%);opacity:1;pointer-events:au
    BACK button — bottom-left in menu state
    ═══════════════════════════════════════════════════════ */
 .back-btn{
-  position:absolute;bottom:36px;left:28px;z-index:15;
+  position:relative;bottom:auto;left:auto;z-index:auto;
   display:flex;align-items:center;gap:12px;
-  padding:12px 24px 12px 14px;
-  background:rgba(2,4,12,.55);
-  border:1px solid var(--gold-dim);
-  cursor:none;
+  padding:8px 12px 8px 0;
+  background:transparent;border:0;
+  cursor:pointer;
   color:var(--gold);
   font-family:var(--display);font-weight:400;font-size:13px;letter-spacing:.32em;
   text-transform:uppercase;
-  transition:background .25s, border-color .25s, color .25s;
-  opacity:0;pointer-events:none;
-  backdrop-filter:blur(6px);
+  transition:color .25s ease;
 }
-body.is-menu .back-btn{opacity:1;pointer-events:auto}
-.back-btn:hover{background:var(--gold);color:var(--darker);border-color:var(--gold)}
+body.is-destination-map .back-btn{color:var(--gold)}
+.back-btn:hover{color:var(--white)}
 .back-btn .arr{font-family:var(--mono);transition:transform .2s}
 .back-btn:hover .arr{transform:translateX(-3px)}
 
@@ -1137,13 +962,14 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
 .modal{
   position:fixed;inset:0;z-index:80;display:none;
   align-items:center;justify-content:center;
-  background:rgba(0,0,0,.55);backdrop-filter:blur(6px);
+  padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));
+  overflow-y:auto;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);
 }
 .modal.is-open{display:flex;animation:fadeIn .35s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 .modal-box{
-  width:min(720px,92vw);
+  width:min(720px,100%);max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;
   background:var(--panel);
   border:1px solid var(--panel-edge);
   position:relative;padding:0;
@@ -1217,6 +1043,11 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
   display:flex;justify-content:space-between;align-items:center;
   padding:18px 28px 24px;border-top:1px solid var(--gold-dim);
 }
+.modal-links{display:flex;gap:10px;align-items:center}
+.modal-link{display:inline-block;background:transparent;border:1px solid var(--gold);color:var(--gold);padding:12px 18px;font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.2em;text-decoration:none;text-transform:uppercase;transition:background .2s,color .2s}
+.modal-link:hover{background:var(--gold);color:var(--darker)}
+.modal-link:focus-visible{outline:2px solid var(--white);outline-offset:3px}
+.modal-empty{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--grey)}
 .mf-stat{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase}
 .modal-btn{
   background:transparent;border:1px solid var(--gold);color:var(--gold);
@@ -1251,7 +1082,7 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
   --gm-panel:rgba(18,34,54,.48);
   --gm-panel-edge:rgba(232,226,208,.20);
 
-  position:fixed;inset:0;z-index:78;
+  position:fixed;inset:0;z-index:78;height:100vh;height:100dvh;
   display:flex;flex-direction:column;
   background:linear-gradient(180deg,
     var(--gm-bg-top) 0%,
@@ -1301,6 +1132,7 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
 .gm-header{
   position:relative;z-index:2;
   display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
   padding:18px 36px;
   border-bottom:1px solid var(--gold-dim);
   background:linear-gradient(180deg, rgba(0,0,0,.22) 0%, transparent 100%);
@@ -1365,7 +1197,7 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
 
 /* Body & pages */
 .gm-body{
-  flex:1;overflow-y:auto;
+  flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
   position:relative;z-index:2;
   padding:48px 60px;
 }
@@ -1520,18 +1352,21 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
 .gm-footer{
   position:relative;z-index:2;
   display:flex;justify-content:space-between;align-items:center;
+  flex-shrink:0;
   padding:14px 36px;
   border-top:1px solid var(--gold-dim);
   background:linear-gradient(0deg, rgba(0,0,0,.22) 0%, transparent 100%);
   font-family:var(--mono);font-size:10px;letter-spacing:.3em;
   color:var(--gm-bone-dim);text-transform:uppercase;
 }
-.gm-foot-right{display:flex;align-items:center;gap:10px}
 .gm-foot-key{
   border:1px solid var(--gold-dim);color:var(--gold);
   padding:3px 8px;font-size:9px;
   background:rgba(0,0,0,.32);
 }
+.gm-dismiss{display:flex;align-items:center;gap:10px;padding:4px 0;border:0;background:transparent;color:inherit;font:inherit;text-transform:inherit;cursor:none}
+.gm-dismiss:hover{color:var(--gm-bone-strong)}
+.gm-dismiss:focus-visible{outline:2px solid var(--white);outline-offset:4px}
 
 /* Make player card clickable */
 .player-card{pointer-events:auto;cursor:none}
@@ -1615,33 +1450,74 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
 }
 .cursor.is-hot::before{transform:scale(1.4);border-color:var(--teal)}
 .cursor.is-hot::after{background:var(--teal)}
+.mobile-menu-btn{position:fixed;top:max(16px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));z-index:14;display:none;min-width:48px;min-height:48px;align-items:center;justify-content:center;padding:0 14px;border:1px solid rgba(201,169,110,.7);background:rgba(2,4,12,.78);color:var(--white);font-family:var(--display);font-size:12px;letter-spacing:.2em;text-transform:uppercase;backdrop-filter:blur(6px);touch-action:manipulation}
+.mobile-menu-btn:focus-visible{outline:2px solid var(--white);outline-offset:3px}
+body.is-briefing .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:none}
+.player-card:focus-visible{outline:2px solid var(--white);outline-offset:4px}
+.gm-tab:focus-visible,.gm-link:focus-visible,.dest-btn:focus-visible,.back-btn:focus-visible,.audio-btn:focus-visible{outline:2px solid var(--white);outline-offset:3px}
+
+.rotate-prompt{display:none}
+@media (max-width:767px) and (orientation:portrait) and (pointer:coarse){
+  body>*:not(#rotatePrompt){visibility:hidden!important}
+  .rotate-prompt{position:fixed;inset:0;z-index:250;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:32px;background:radial-gradient(ellipse at center,rgba(28,48,67,.98),#02050d 72%);color:var(--white);text-align:center;font-family:var(--display);letter-spacing:.2em;text-transform:uppercase}
+  .rotate-prompt svg{width:72px;height:72px;color:var(--gold)}
+  .rotate-prompt strong{font-size:clamp(18px,6vw,26px);font-weight:500}
+  .rotate-prompt span{max-width:28ch;color:var(--grey);font-family:var(--mono);font-size:12px;line-height:1.7;letter-spacing:.08em;text-transform:none}
+}
 
 /* ═══════════════════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════════════════ */
 @media (max-width:1100px){
-  .ship-stage{width:480px;height:220px;margin-left:-240px;margin-top:-110px;top:48%}
-  body.is-menu .ship-stage{transform:translate(0,-100px) scale(.5);opacity:.6}
-  body.is-menu .planet-stage{left:50%;width:380px;height:380px;margin-left:-190px}
-  .dest-panel{right:50%;transform:translate(50%,calc(-50% + 420px));width:min(420px,92vw)}
-  body.is-menu .dest-panel{transform:translate(50%,-50%)}
+  .ship-stage{width:min(720px,82vw);height:min(440px,49.5vw);top:48%}
+  .dest-panel{padding:24px}
+  .dest-row{width:clamp(104px,17vw,150px)}
+  .dot{width:clamp(58px,9vw,90px);height:clamp(58px,9vw,90px)}
   .player-card{transform:scale(.85);transform-origin:top right}
   .prompts{display:none}
   .gm-grid{grid-template-columns:1fr}
   .gm-section-wide,.gm-section-full{grid-column:span 1}
   .gm-page-title{font-size:46px}
   .gm-body{padding:32px 28px}
-  .gm-header{padding:14px 24px}
+  .gm-header{padding:max(14px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) 14px max(24px,env(safe-area-inset-left))}
+  .gm-footer{padding:12px max(24px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left))}
+  .mobile-menu-btn{display:flex}
+  .player-card{display:none}
 }
 @media (max-width:520px){
   .hud-tl{font-size:9px;letter-spacing:.14em}
   .player-card{transform:scale(.7);transform-origin:top right}
-  .ship-stage{width:340px;height:160px;margin-left:-170px;margin-top:-80px}
+  .ship-stage{width:92vw;height:56vw;top:51%}
   .dest-btn{font-size:11px;letter-spacing:.28em;padding:10px 18px 10px 14px}
   .center-title{display:none}
-  .dest-panel{padding:18px 16px}
-  .dest-row{grid-template-columns:28px 1fr;gap:10px}
+  .dest-panel{padding:max(16px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+  .dest-row{width:112px;min-height:100px;gap:6px;padding:5px 2px;touch-action:manipulation}
+  .dest-row[data-i="0"]{left:28%;top:44%}
+  .dest-row[data-i="1"]{left:72%;top:44%}
+  .dest-row[data-i="2"]{left:50%;top:75%}
+  .tower-marker{left:28%;top:14%}
+  .tower-sphere{width:28px}
+  .dot{width:56px;height:56px}
+  .dest-world{font-size:10px;letter-spacing:.16em}
+  .dest-loc{display:none}
   .dest-tag{display:none}
+  .panel-head{padding-bottom:8px}
+  .panel-head .ph-l{font-size:11px;letter-spacing:.2em}
+  .panel-head .ph-r{font-size:7px;letter-spacing:.14em}
+  .panel-foot{min-height:52px;gap:4px;padding-top:6px;letter-spacing:.12em}
+  .panel-foot .pf-l{display:none}
+  .back-btn{font-size:9px;letter-spacing:.12em;padding:5px 4px 5px 0;gap:6px}
+  .back-btn .arr{font-size:10px}
+  .dest-row.is-current::after{font-size:6px;letter-spacing:.12em}
+  .destination-briefing{left:16px;right:16px;bottom:20px;gap:10px}
+  .briefing-copy{max-width:62vw}
+  .briefing-kicker{font-size:8px;letter-spacing:.14em;margin-bottom:5px}
+  .briefing-title{font-size:clamp(27px,8vw,40px)}
+  .briefing-location{font-size:12px;margin-top:6px}
+  .brief-launch{min-width:108px;padding:12px 14px;font-size:11px;letter-spacing:.22em}
+  .modal-foot{gap:12px;padding:14px 16px 18px;flex-wrap:wrap}
+  .modal-links{flex:1;justify-content:flex-end;flex-wrap:wrap}
+  .modal-link{padding:10px 12px;font-size:10px;letter-spacing:.14em}
   .mh-world{font-size:26px}
   .mb-meta{grid-template-columns:1fr 1fr}
   body{cursor:auto}
@@ -1651,12 +1527,60 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
   .gm-tab-ico{display:none}
   .gm-page-title{font-size:34px}
   .gm-body{padding:24px 18px}
-  .gm-header{padding:12px 18px}
-  .gm-footer{padding:12px 18px}
+  .gm-header{padding:max(12px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) 12px max(18px,env(safe-area-inset-left))}
+  .gm-footer{padding:12px max(18px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}
+}
+@media (pointer:coarse){
+  body{cursor:auto}
+  button,a,[role="button"]{cursor:pointer}
+  .dest-btn,.brief-launch,.back-btn,.gm-tab,.gm-link,.modal-link,.mh-close,.audio-btn{min-height:44px;cursor:pointer}
+  .dest-btn{min-width:48px}
+  .gm-tab{min-width:44px}
+  .audio-btn{min-width:44px}
+  .mh-close{width:44px;height:44px}
+  .dest-row{min-width:104px;min-height:100px;touch-action:manipulation}
+  .tower-trigger{min-width:96px;min-height:52px;touch-action:manipulation}
+  .tower-links a{min-width:112px;min-height:48px}
+  .gm-link{align-items:center}
+  .mobile-menu-btn{cursor:pointer}
+  .gm-dismiss{min-height:44px;cursor:pointer}
+}
+@media (max-height:520px) and (orientation:landscape) and (pointer:coarse){
+  .dest-panel{padding:max(8px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))}
+  .panel-head{padding-bottom:5px}
+  .dest-row{width:clamp(96px,14vw,124px);min-height:90px;gap:3px;padding:3px}
+  .dest-row[data-i="0"]{left:18%;top:58%}
+  .dest-row[data-i="1"]{left:50%;top:50%}
+  .dest-row[data-i="2"]{left:82%;top:50%}
+  .tower-marker{left:18%;top:20%}
+  .tower-sphere{width:26px}
+  .dot{width:clamp(44px,9vh,68px);height:clamp(44px,9vh,68px)}
+  .dest-world{font-size:10px;letter-spacing:.12em}
+  .panel-foot{min-height:42px;padding-top:5px}
+  .back-btn{font-size:10px;padding:4px 6px 4px 0}
+  .ship-stage{width:min(78vw,680px);height:min(62vh,340px);top:50%}
+  .gm-header{padding:max(8px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) 8px max(18px,env(safe-area-inset-left))}
+  .gm-footer{padding:8px max(18px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}
+  .gm-body{padding:16px 22px}
+  .gm-page-head{margin-bottom:20px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
+  body{cursor:auto}
+  .cursor{display:none}
 }
 </style>
 </head>
 <body class="is-orbit">
+
+<div class="rotate-prompt" id="rotatePrompt" role="alert" aria-live="assertive">
+  <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+    <rect x="14" y="20" width="26" height="40" rx="4" stroke="currentColor" stroke-width="3"/>
+    <path d="M48 14a19 19 0 0 1 1 29M48 14l-8 1 4-7M49 43l-1-8 7 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <strong>Rotate your device</strong>
+  <span>This portfolio is designed to be viewed in landscape. Turn your phone to continue.</span>
+</div>
 
 <!-- DEEP SPACE -->
 <div class="space">
@@ -1676,10 +1600,7 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
 <div class="planet-stage" id="planetStage">
   <div class="planet p-earth is-active" data-p="0"></div>
   <div class="planet p-moon" data-p="1"></div>
-  <div class="planet p-venus" data-p="2"></div>
-  <div class="planet p-mars" data-p="3"></div>
-  <div class="planet p-reef" data-p="4"></div>
-  <div class="planet p-classified" data-p="5"></div>
+  <div class="planet p-mars" data-p="2"></div>
 </div>
 
 <!-- THE SHIP — stylized jumpship SVG -->
@@ -1687,133 +1608,11 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
 <div class="ship-stage">
   <div class="ship-fly">
   <div class="ship-bob">
-<svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="hl" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0" stop-color="#e6e8ee"/>
-      <stop offset=".5" stop-color="#a4a8b4"/>
-      <stop offset="1" stop-color="#3a3e48"/>
-    </linearGradient>
-    <linearGradient id="hm" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0" stop-color="#6c7080"/>
-      <stop offset=".5" stop-color="#3a3e48"/>
-      <stop offset="1" stop-color="#14181f"/>
-    </linearGradient>
-    <linearGradient id="gd" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0" stop-color="#e8c890"/>
-      <stop offset=".5" stop-color="#c9a96e"/>
-      <stop offset="1" stop-color="#7e6a44"/>
-    </linearGradient>
-    <radialGradient id="eg">
-      <stop offset="0" stop-color="#dff5fc"/>
-      <stop offset=".35" stop-color="#5bc8d8"/>
-      <stop offset="1" stop-color="#0a2832"/>
-    </radialGradient>
-    <radialGradient id="cg">
-      <stop offset="0" stop-color="#324858"/>
-      <stop offset=".7" stop-color="#0a1218"/>
-    </radialGradient>
-    <filter id="sg" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="7"/>
-    </filter>
-    <linearGradient id="trailG" x1="0" x2="1" y1="0" y2="0">
-      <stop offset="0" stop-color="#5bc8d8" stop-opacity="0"/>
-      <stop offset=".55" stop-color="#5bc8d8" stop-opacity=".4"/>
-      <stop offset="1" stop-color="#dff5fc" stop-opacity=".75"/>
-    </linearGradient>
-  </defs>
-
-  <!-- Thruster trails (visible during fly-in only) -->
-  <g class="trails">
-    <ellipse cx="-160" cy="178" rx="280" ry="9" fill="url(#trailG)"/>
-    <ellipse cx="-160" cy="242" rx="280" ry="9" fill="url(#trailG)"/>
-  </g>
-
-  <!-- Engine glow halos -->
-  <g class="engine-halos" filter="url(#sg)" opacity=".8">
-    <circle cx="115" cy="178" r="24" fill="#5bc8d8"/>
-    <circle cx="115" cy="242" r="24" fill="#5bc8d8"/>
-  </g>
-  <!-- Brighter halos that fade in during warp phases -->
-  <g class="engine-halos-bright" filter="url(#sg)" opacity="0">
-    <circle cx="115" cy="178" r="44" fill="#ffffff"/>
-    <circle cx="115" cy="242" r="44" fill="#ffffff"/>
-    <circle cx="115" cy="178" r="28" fill="#dff5fc"/>
-    <circle cx="115" cy="242" r="28" fill="#dff5fc"/>
-  </g>
-
-  <!-- Twin engine pods -->
-  <g>
-    <!-- Upper engine -->
-    <ellipse cx="138" cy="178" rx="22" ry="15" fill="none" stroke="#0a1218" stroke-width="2.5"/>
-    <ellipse cx="138" cy="178" rx="20" ry="13" fill="url(#eg)"/>
-    <ellipse cx="138" cy="178" rx="12" ry="8" fill="#dff5fc"/>
-    <ellipse cx="138" cy="178" rx="5" ry="3" fill="#fff"/>
-    <path d="M 152 165 L 290 162 L 320 175 L 320 195 L 290 198 L 152 192 Z"
-      fill="url(#hm)" stroke="#0a1218" stroke-width="1.5"/>
-    <line x1="152" y1="165" x2="290" y2="162" stroke="#a4a8b4" stroke-width="1" opacity=".5"/>
-
-    <!-- Lower engine -->
-    <ellipse cx="138" cy="242" rx="22" ry="15" fill="none" stroke="#0a1218" stroke-width="2.5"/>
-    <ellipse cx="138" cy="242" rx="20" ry="13" fill="url(#eg)"/>
-    <ellipse cx="138" cy="242" rx="12" ry="8" fill="#dff5fc"/>
-    <ellipse cx="138" cy="242" rx="5" ry="3" fill="#fff"/>
-    <path d="M 152 228 L 290 226 L 320 230 L 320 254 L 290 258 L 152 256 Z"
-      fill="url(#hm)" stroke="#0a1218" stroke-width="1.5"/>
-    <line x1="152" y1="228" x2="290" y2="226" stroke="#a4a8b4" stroke-width="1" opacity=".5"/>
-  </g>
-
-  <!-- Mid-strut between engines -->
-  <g>
-    <path d="M 295 196 L 320 200 L 320 222 L 295 226 Z" fill="#1a1e28"/>
-  </g>
-
-  <!-- Main hull -->
-  <g>
-    <path d="M 295 195 L 580 198 L 680 210 L 580 224 L 295 245 L 255 220 L 255 200 Z"
-      fill="url(#hl)" stroke="#0a1218" stroke-width="1.5"/>
-    <!-- Gold accent stripe along the top -->
-    <path d="M 305 197 L 580 201 L 596 207 L 580 209 L 305 204 Z" fill="url(#gd)" opacity=".9"/>
-    <line x1="305" y1="197" x2="580" y2="201" stroke="#fff" stroke-width=".8" opacity=".55"/>
-    <!-- Panel lines -->
-    <g stroke="#1a1e28" stroke-width=".8" fill="none" opacity=".55">
-      <line x1="350" y1="200" x2="355" y2="244"/>
-      <line x1="420" y1="200" x2="424" y2="240"/>
-      <line x1="490" y1="201" x2="494" y2="232"/>
-    </g>
-    <line x1="295" y1="245" x2="580" y2="224" stroke="#0a1218" stroke-width="1" opacity=".5"/>
-  </g>
-
-  <!-- Dorsal fin -->
-  <g>
-    <path d="M 380 197 L 478 145 L 495 200 Z" fill="url(#hl)" stroke="#0a1218" stroke-width="1.2"/>
-    <path d="M 478 145 L 495 200" stroke="url(#gd)" stroke-width="1.5" opacity=".75"/>
-  </g>
-
-  <!-- Cockpit canopy bump -->
-  <g>
-    <path d="M 480 198 Q 540 168 600 202 L 580 211 L 510 213 Z"
-      fill="url(#cg)" stroke="#0a1218" stroke-width="1.5"/>
-    <path d="M 490 197 Q 540 175 595 203" stroke="#5bc8d8" stroke-width="1" fill="none" opacity=".5"/>
-    <ellipse cx="525" cy="184" rx="9" ry="2" fill="#fff" opacity=".55"/>
-  </g>
-
-  <!-- Forward probe -->
-  <g>
-    <path d="M 680 207 L 715 209 L 715 212 L 680 213 Z" fill="url(#hm)" stroke="#0a1218" stroke-width=".8"/>
-    <line x1="715" y1="210" x2="740" y2="210" stroke="#a4a8b4" stroke-width="1.5"/>
-    <line x1="740" y1="210" x2="740" y2="207" stroke="#dde0e8" stroke-width="1.5"/>
-  </g>
-
-  <!-- Position lights -->
-  <g>
-    <circle cx="200" cy="194" r="1.8" fill="#5bc8d8"/>
-    <circle cx="200" cy="244" r="1.8" fill="#5bc8d8"/>
-    <circle cx="380" cy="225" r="1.5" fill="#c9a96e"/>
-    <circle cx="450" cy="226" r="1.5" fill="#c9a96e"/>
-    <circle cx="520" cy="226" r="1.5" fill="#5bc8d8"/>
-  </g>
-</svg>
+<div class="ship-effects" aria-hidden="true">
+  <i class="engine-halo engine-pod-a"></i><i class="engine-halo engine-pod-b"></i>
+  <i class="engine-fire engine-fire-a"></i><i class="engine-fire engine-fire-b"></i>
+</div>
+<img src="media/destiny-jumpship.svg" alt="" />
   </div>
   </div>
 </div>
@@ -1827,22 +1626,10 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
   <div class="ls-ship">
     <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="lsBody" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0" stop-color="#6c7080"/>
-          <stop offset=".5" stop-color="#3a3e48"/>
-          <stop offset="1" stop-color="#14181f"/>
-        </linearGradient>
-        <linearGradient id="lsBodyTop" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0" stop-color="#a4a8b4"/>
-          <stop offset="1" stop-color="#3a3e48"/>
-        </linearGradient>
-        <linearGradient id="lsWing" x1="0" x2="1" y1="0" y2="0">
-          <stop offset="0" stop-color="#3a3e48"/>
-          <stop offset="1" stop-color="#6c7080"/>
-        </linearGradient>
-        <linearGradient id="lsWingR" x1="1" x2="0" y1="0" y2="0">
-          <stop offset="0" stop-color="#3a3e48"/>
-          <stop offset="1" stop-color="#6c7080"/>
+        <linearGradient id="lsArmor" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#d4d2cc"/>
+          <stop offset=".55" stop-color="#777d89"/>
+          <stop offset="1" stop-color="#242a34"/>
         </linearGradient>
         <linearGradient id="lsGold" x1="0" x2="0" y1="0" y2="1">
           <stop offset="0" stop-color="#e8c890"/>
@@ -1852,56 +1639,48 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
           <stop offset="0" stop-color="#ffffff"/>
           <stop offset=".35" stop-color="#dff5fc"/>
           <stop offset=".7" stop-color="#5bc8d8"/>
-          <stop offset="1" stop-color="rgba(91,200,216,0)"/>
+          <stop offset="1" stop-color="#12303b"/>
         </radialGradient>
         <filter id="lsBlur"><feGaussianBlur stdDeviation="8"/></filter>
         <filter id="lsBlurSm"><feGaussianBlur stdDeviation="4"/></filter>
       </defs>
 
-      <!-- Big engine glow halos behind ship -->
       <g class="ls-engine-glow" filter="url(#lsBlur)" opacity=".95">
-        <ellipse cx="220" cy="220" rx="58" ry="22" fill="#5bc8d8"/>
-        <ellipse cx="380" cy="220" rx="58" ry="22" fill="#5bc8d8"/>
+        <ellipse cx="150" cy="220" rx="58" ry="24" fill="#5bc8d8"/>
+        <ellipse cx="450" cy="220" rx="58" ry="24" fill="#5bc8d8"/>
       </g>
 
-      <!-- Wing flares (perspective: spreading wider toward camera) -->
-      <path d="M 60 240 L 240 175 L 260 200 L 220 240 Z"
-        fill="url(#lsWing)" stroke="#0a0908" stroke-width="1.2"/>
-      <path d="M 540 240 L 360 175 L 340 200 L 380 240 Z"
-        fill="url(#lsWingR)" stroke="#0a0908" stroke-width="1.2"/>
-      <!-- Wing leading-edge highlights -->
-      <line x1="60" y1="240" x2="240" y2="175" stroke="#dde0e8" stroke-width="1" opacity=".5"/>
-      <line x1="540" y1="240" x2="360" y2="175" stroke="#dde0e8" stroke-width="1" opacity=".5"/>
+      <!-- Aft silhouette echoes the broad twin nacelles from orbit -->
+      <path d="M104 215 45 250 145 172 225 180 250 220 215 260Z"
+            fill="#252b35" stroke="#111722" stroke-width="5"/>
+      <path d="M496 215 555 250 455 172 375 180 350 220 385 260Z"
+            fill="#252b35" stroke="#111722" stroke-width="5"/>
+      <path d="M180 178 250 145 350 145 420 178 484 236 392 257 208 257 116 236Z"
+            fill="url(#lsArmor)" stroke="#111722" stroke-width="6" stroke-linejoin="round"/>
+      <path d="m250 148 100 0 21 28-142 0Z" fill="#464d59"/>
+      <path d="m290 150 20 0 13 95-23 12-23-12Z" fill="url(#lsGold)" opacity=".85"/>
+      <path d="m205 190-38 42 62 12M395 190l38 42-62 12"
+            fill="none" stroke="#a4a8b4" stroke-width="6"/>
+      <path d="m265 184-14 65M335 184l14 65"
+            fill="none" stroke="#222832" stroke-width="5"/>
 
-      <!-- Body trapezoid (back is wider, perspective tapers forward) -->
-      <path d="M 240 175 L 360 175 L 380 240 L 220 240 Z"
-        fill="url(#lsBody)" stroke="#0a0908" stroke-width="1.5"/>
-      <!-- Body top edge highlight -->
-      <path d="M 248 178 L 352 178 L 354 184 L 246 184 Z" fill="url(#lsBodyTop)"/>
-      <!-- Gold accent stripe down the spine -->
-      <path d="M 295 175 L 305 175 L 308 240 L 292 240 Z" fill="url(#lsGold)" opacity=".75"/>
-      <!-- Vertical panel lines -->
-      <line x1="270" y1="175" x2="276" y2="240" stroke="#0a0908" stroke-width=".8" opacity=".55"/>
-      <line x1="324" y1="240" x2="330" y2="175" stroke="#0a0908" stroke-width=".8" opacity=".55"/>
+      <!-- Twin engine housings and hot cores -->
+      <g fill="#131923" stroke="#727986" stroke-width="5">
+        <ellipse cx="150" cy="220" rx="42" ry="27"/>
+        <ellipse cx="450" cy="220" rx="42" ry="27"/>
+      </g>
+      <g fill="url(#lsEngineG)">
+        <ellipse cx="150" cy="220" rx="34" ry="21"/>
+        <ellipse cx="450" cy="220" rx="34" ry="21"/>
+      </g>
+      <g fill="#ffffff">
+        <ellipse cx="150" cy="220" rx="14" ry="8"/>
+        <ellipse cx="450" cy="220" rx="14" ry="8"/>
+      </g>
 
-      <!-- Engine nozzle housings -->
-      <ellipse cx="220" cy="220" rx="26" ry="14" fill="#0a1218" stroke="#3a3e48" stroke-width="2"/>
-      <ellipse cx="380" cy="220" rx="26" ry="14" fill="#0a1218" stroke="#3a3e48" stroke-width="2"/>
-      <!-- Engine plasma -->
-      <ellipse cx="220" cy="220" rx="22" ry="11" fill="url(#lsEngineG)"/>
-      <ellipse cx="380" cy="220" rx="22" ry="11" fill="url(#lsEngineG)"/>
-      <!-- Engine cores (white-hot) -->
-      <ellipse cx="220" cy="220" rx="11" ry="5" fill="#ffffff"/>
-      <ellipse cx="380" cy="220" rx="11" ry="5" fill="#ffffff"/>
-
-      <!-- Vertical fin/spine on top of body -->
-      <path d="M 296 130 L 304 130 L 312 175 L 288 175 Z"
-        fill="url(#lsBody)" stroke="#0a0908" stroke-width="1"/>
-
-      <!-- Pulsing engine glow front -->
       <g class="ls-engine-pulse" filter="url(#lsBlurSm)" opacity=".7">
-        <ellipse cx="220" cy="220" rx="36" ry="14" fill="#dff5fc"/>
-        <ellipse cx="380" cy="220" rx="36" ry="14" fill="#dff5fc"/>
+        <ellipse cx="150" cy="220" rx="46" ry="30" fill="#dff5fc"/>
+        <ellipse cx="450" cy="220" rx="46" ry="30" fill="#dff5fc"/>
       </g>
     </svg>
   </div>
@@ -1947,7 +1726,7 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
 </div>
 
 <!-- PLAYER CARD -->
-<div class="player-card">
+<div class="player-card" role="button" tabindex="0" aria-label="Open portfolio menu" aria-haspopup="dialog" aria-controls="guardianMenu" aria-expanded="false">
   <div class="pc-orb"></div>
   <div class="pc-tile">
     <div class="pc-emblem"></div>
@@ -1960,21 +1739,26 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
   <div class="pc-tag">PORTFOLIO BUILD</div>
 </div>
 
+<button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Open portfolio menu" aria-haspopup="dialog" aria-controls="guardianMenu" aria-expanded="false">MENU</button>
+
 <!-- SET DESTINATION button (orbit) -->
 <button class="dest-btn" id="destBtn">
   <span class="globe"><span></span></span>
   <span>SET DESTINATION</span>
 </button>
 
-<!-- BACK button (menu) -->
-<button class="back-btn" id="backBtn">
-  <span class="arr">⟵</span>
-  <span>RETURN TO ORBIT</span>
-</button>
+<section class="destination-briefing" id="destinationBriefing" aria-live="polite">
+  <div class="briefing-copy">
+    <div class="briefing-kicker" id="briefingWorld">DESTINATION SELECTED</div>
+    <h1 class="briefing-title" id="briefingTitle"></h1>
+    <div class="briefing-location" id="briefingLocation"></div>
+    <div class="briefing-rule"></div>
+  </div>
+  <button class="brief-launch" id="launchSelected" type="button">Launch</button>
+</section>
 
 <!-- prompt bar -->
 <div class="prompts">
-  <div class="prompt"><span class="kbd tri">△</span><span>Roster</span></div>
   <div class="prompt"><span class="kbd">ESC</span><span>Menu</span></div>
 </div>
 
@@ -1986,17 +1770,38 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
   <span class="bracket bk-br"></span>
   <div class="panel-head">
     <div class="ph-l">SET DESTINATION</div>
-    <div class="ph-r">06 / 06</div>
+    <div class="ph-r">SOL SYSTEM // 03 PROJECTS</div>
   </div>
-  <div class="dest-list" id="destList"></div>
+  <div class="dest-list" id="destList" role="group" aria-label="Portfolio destinations">
+    <svg class="map-orbits" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true">
+      <ellipse cx="500" cy="300" rx="410" ry="185" transform="rotate(-10 500 300)" />
+      <ellipse class="orbit-accent" cx="500" cy="300" rx="330" ry="255" transform="rotate(24 500 300)" />
+      <ellipse cx="500" cy="300" rx="225" ry="150" transform="rotate(-32 500 300)" />
+      <path d="M80 302 C250 80 720 40 920 270" />
+    </svg>
+    <details class="tower-marker">
+      <summary class="tower-trigger" aria-label="The Tower. Show personal profile links.">
+        <span class="tower-sphere" aria-hidden="true"></span>
+        <span class="tower-label">THE TOWER</span>
+      </summary>
+      <nav class="tower-links" aria-label="Personal profiles">
+        <a href="https://github.com/mlkeniston" target="_blank" rel="noopener noreferrer">GITHUB</a>
+        <a href="https://www.linkedin.com/in/malcolm-keniston/" target="_blank" rel="noopener noreferrer">LINKEDIN</a>
+      </nav>
+    </details>
+  </div>
   <div class="panel-foot">
+    <button class="back-btn" id="backBtn" type="button">
+      <span class="arr">⟵</span>
+      <span>RETURN TO ORBIT</span>
+    </button>
     <span class="pf-l">SELECT TO ENGAGE</span>
-    <span class="pf-r">⟶ WARP READY</span>
+    <span class="pf-r">ARROWS NAVIGATE · ENTER SELECT</span>
   </div>
 </div>
 
 <!-- GUARDIAN MENU -->
-<div class="guardian-menu" id="guardianMenu">
+<div class="guardian-menu" id="guardianMenu" role="dialog" aria-modal="true" aria-label="Portfolio menu" tabindex="-1">
   <div class="gm-bg"></div>
 
   <div class="gm-header">
@@ -2054,7 +1859,7 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
       <div class="gm-grid">
         <div class="gm-section">
           <div class="gm-section-label">Biography</div>
-          <p class="gm-section-text">Hello, my name is Malcolm Keniston. I graduated from PVCC in 2026 with an A.S. in Computer Science. I am seeking Software Engineering and adjacent tech roles.</p>
+          <p class="gm-section-text">Hello, my name is Malcolm Keniston. I graduated from PVCC in 2026 with an A.S. in Computer Science and am now an undeclared CEC student at George Mason University. I am seeking Software Engineering and adjacent tech roles.</p>
         </div>
         <div class="gm-section gm-portrait">
           <div class="gm-section-label">Portrait</div>
@@ -2069,10 +1874,10 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
         <div class="gm-section">
           <div class="gm-section-label">Stats</div>
           <div class="gm-stats">
-            <div class="gm-stat"><span class="gm-stat-k">Class</span><span class="gm-stat-v">WIP</span></div>
+            <div class="gm-stat"><span class="gm-stat-k">Class</span><span class="gm-stat-v">Class of 2028</span></div>
             <div class="gm-stat"><span class="gm-stat-k">Tools</span><span class="gm-stat-v">WIP</span></div>
-            <div class="gm-stat"><span class="gm-stat-k">Location</span><span class="gm-stat-v">WIP</span></div>
-            <div class="gm-stat"><span class="gm-stat-k">Status</span><span class="gm-stat-v">WIP</span></div>
+            <div class="gm-stat"><span class="gm-stat-k">Location</span><span class="gm-stat-v">Fairfax, VA</span></div>
+            <div class="gm-stat"><span class="gm-stat-k">Status</span><span class="gm-stat-v">Junior at George Mason University</span></div>
           </div>
         </div>
         <div class="gm-section">
@@ -2104,11 +1909,11 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
       <div class="gm-grid">
         <div class="gm-section gm-section-full">
           <div class="gm-section-label">Guardian Orbit v1.0</div>
-          <p class="gm-section-text">A portfolio site styled as an orbit screen — six destinations representing six projects, viewed from the bridge of a personal jumpship. Click "Set Destination" to see the project list, or select any world to launch into its details.</p>
+          <p class="gm-section-text">A portfolio site styled as an orbit screen — three planetary destinations representing featured projects, viewed from the bridge of a personal jumpship. Click "Set Destination" to browse the project map, then select a world to open its details.</p>
         </div>
         <div class="gm-section">
           <div class="gm-section-label">Design</div>
-          <p class="gm-section-text">Built as a single HTML file. Palette is gold and teal against deep space. Every visual — the planet, ship, sun, stars — is a CSS gradient or inline SVG. No textures, no images.</p>
+          <p class="gm-section-text">Built as a single HTML file with a gold-and-teal interface, a custom SVG ship, and detailed planet textures against deep space.</p>
         </div>
         <div class="gm-section">
           <div class="gm-section-label">Controls</div>
@@ -2129,15 +1934,15 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
 
   <div class="gm-footer">
     <span>GUARDIAN ORBIT // PORTFOLIO BUILD</span>
-    <span class="gm-foot-right">
+    <button class="gm-dismiss" id="gmDismissBtn" type="button" aria-label="Dismiss portfolio menu">
       <span class="gm-foot-key">ESC</span>
       <span>Dismiss</span>
-    </span>
+    </button>
   </div>
 </div>
 
 <!-- MODAL -->
-<div class="modal" id="modal">
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mProj" aria-describedby="mDesc" tabindex="-1">
   <div class="modal-box">
     <span class="bracket bk-tl"></span>
     <span class="bracket bk-tr"></span>
@@ -2147,9 +1952,9 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
     <button class="mh-close" id="modalClose" aria-label="Close">×</button>
     <div class="modal-head">
       <div class="mh-l">
-        <div class="mh-proj" id="mProj">CASE STUDY 01</div>
+        <div class="mh-proj" id="mProj">SHONEN SHOWDOWN</div>
         <div class="mh-world" id="mWorld">EARTH</div>
-        <div class="mh-loc" id="mLoc">The Cosmodrome</div>
+        <div class="mh-loc" id="mLoc">shonenshowdown.dev</div>
       </div>
       <div class="mh-r">
         <span class="mh-coord">LAT 34.05° / LON -118.24°</span>
@@ -2163,14 +1968,16 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
         <p class="mb-desc" id="mDesc">Description goes here.</p>
       </div>
       <div class="mb-meta">
-        <div class="mm-cell"><span class="mm-k">Role</span><span class="mm-v">WIP</span></div>
-        <div class="mm-cell"><span class="mm-k">Stack</span><span class="mm-v">WIP</span></div>
-        <div class="mm-cell"><span class="mm-k">Year</span><span class="mm-v">WIP</span></div>
+        <div class="mm-cell"><span class="mm-k" id="mRoleLabel">Role</span><span class="mm-v" id="mRole"></span></div>
+        <div class="mm-cell"><span class="mm-k" id="mStackLabel">Stack</span><span class="mm-v" id="mStack"></span></div>
+        <div class="mm-cell"><span class="mm-k" id="mYearLabel">Year</span><span class="mm-v" id="mYear"></span></div>
       </div>
     </div>
     <div class="modal-foot">
       <div class="mf-stat" id="mStat">● ACTIVE</div>
-      <button class="modal-btn" id="modalBtn"><span>LAUNCH MISSION ⟶</span></button>
+      <div class="modal-links" id="modalLinks">
+        <span class="modal-empty" id="modalEmpty">PROJECT LINKS WILL BE ADDED HERE</span>
+      </div>
     </div>
   </div>
 </div>
@@ -2195,119 +2002,114 @@ body.is-menu .back-btn{opacity:1;pointer-events:auto}
    DESTINATIONS — edit these to point at your projects.
    ═══════════════════════════════════════════════════════ */
 const DEST = [
-  { world:'EARTH',
-    loc:'The Cosmodrome',
-    proj:'CASE STUDY 01',
-    tag:'— AVAILABLE —',
-    desc:'WIP',
-    stat:'● ACTIVE', sCol:'#5bc8d8',
+  { world:'EARTH', mapX:50, mapY:48,
+    loc:'shonenshowdown.dev',
+    proj:'SHONEN SHOWDOWN',
+    tag:'— LIVE —',
+    desc:'Live project at shonenshowdown.dev.',
+    stat:'● LIVE', sCol:'#5bc8d8',
     dot:'d-earth', pCls:'p-earth',
-    stripe:'#1e78c0', fill:'rgba(10,44,82,.97)', url:'#'
+    stripe:'#1e78c0', fill:'rgba(10,44,82,.97)', githubUrl:'', websiteUrl:'https://shonenshowdown.dev', meta:[['Role','Full-stack developer'],['Stack','Next.js · Supabase'],['Year','2026']]
   },
-  { world:'MOON',
-    loc:'Ocean of Storms',
-    proj:'CASE STUDY 02',
-    tag:'— ARCHIVED —',
-    desc:'WIP',
-    stat:'● COMPLETE', sCol:'#b4b8c4',
+  { world:'MOON', mapX:28, mapY:24,
+    loc:'George Mason University',
+    proj:'ROBLOX DEV CLUB',
+    tag:'— COMING SPRING —',
+    desc:'In development for a planned spring launch at George Mason University.',
+    stat:'● IN DEVELOPMENT', sCol:'#b4b8c4',
     dot:'d-moon', pCls:'p-moon',
-    stripe:'#7c8295', fill:'rgba(40,42,52,.97)', url:'#'
+    stripe:'#7c8295', fill:'rgba(40,42,52,.97)', githubUrl:'https://github.com/Roblox-Dev-Club', websiteUrl:'', meta:[['Role','Founder / Organizer'],['Focus','Roblox development'],['Timeline','Spring']]
   },
-  { world:'VENUS',
-    loc:'Ishtar Sink',
-    proj:'CASE STUDY 03',
-    tag:'— UNSTABLE —',
-    desc:'WIP',
-    stat:'● IN FLIGHT', sCol:'#f5c98a',
-    dot:'d-venus', pCls:'p-venus',
-    stripe:'#d68a3e', fill:'rgba(80,38,8,.97)', url:'#'
-  },
-  { world:'MARS',
-    loc:'Meridian Bay',
-    proj:'CASE STUDY 04',
-    tag:'— HOSTILE —',
-    desc:'WIP',
-    stat:'● DEPLOYED', sCol:'#d56a3a',
+  { world:'MARS', mapX:72, mapY:24,
+    loc:'In development',
+    proj:'CAREEROS',
+    tag:'— WORK IN PROGRESS —',
+    desc:'CareerOS is a work in progress.',
+    stat:'● IN DEVELOPMENT', sCol:'#d56a3a',
     dot:'d-mars', pCls:'p-mars',
-    stripe:'#a83a1e', fill:'rgba(70,18,6,.97)', url:'#'
-  },
-  { world:'THE REEF',
-    loc:'Vestian Outpost',
-    proj:'CASE STUDY 05',
-    tag:'— RESTRICTED —',
-    desc:'WIP',
-    stat:'● EXPERIMENTAL', sCol:'#b078d8',
-    dot:'d-reef', pCls:'p-reef',
-    stripe:'#7a4ab8', fill:'rgba(34,18,64,.97)', url:'#'
-  },
-  { world:'[CLASSIFIED]',
-    loc:'Coordinates Encrypted',
-    proj:'TRANSMISSION',
-    tag:'— REDACTED —',
-    desc:'WIP',
-    stat:'● UNKNOWN', sCol:'#e04848',
-    dot:'d-classified', pCls:'p-classified',
-    stripe:'#9a1e1e', fill:'rgba(20,4,4,.97)', url:'#'
+    stripe:'#a83a1e', fill:'rgba(70,18,6,.97)', githubUrl:'https://github.com/mlkeniston/CareerOS', websiteUrl:'', meta:[['Role','Creator / Developer'],['Stack','Python · SQLite'],['Year','2026']]
   }
 ];
 
 /* build destination rows */
 const list = document.getElementById('destList');
 DEST.forEach((d,i)=>{
-  const row = document.createElement('div');
+  const row = document.createElement('button');
+  row.type = 'button';
   row.className = 'dest-row';
   row.dataset.i = i;
+  row.style.setProperty('--map-x', d.mapX+'%');
+  row.style.setProperty('--map-y', d.mapY+'%');
+  row.setAttribute('aria-label', `${d.world}, ${d.proj}`);
   row.innerHTML = `
-    <div class="dot ${d.dot}"></div>
-    <div class="dest-text">
-      <div class="dest-world">${d.world}</div>
-      <div class="dest-loc">${d.loc}</div>
-    </div>
-    <div class="dest-tag">${d.tag}</div>
+    <span class="dot ${d.dot}"></span>
+    <span class="dest-text">
+      <span class="dest-world">${d.world}</span>
+      <span class="dest-loc">${d.loc}</span>
+    </span>
+    <span class="dest-tag">${d.tag}</span>
   `;
   list.appendChild(row);
 });
 
-/* state — orbit ↔ menu */
+/* state — orbit ↔ destination map ↔ pending briefing */
 const body = document.body;
-let lastVisited = 0;       // index of last destination that reached lightspeed
-let activeWarpDest = -1;   // captured at launch(); committed at lightspeed-reach
+let lastVisited = 0;
+let activeWarpDest = -1;
+let pendingDest = -1;
+let mapFocus = 0;
 
 function showOrbit(){
   body.classList.add('is-orbit');
-  body.classList.remove('is-menu');
-  setActive(lastVisited);
-  // Classified (index 5) showcases nothing — empty deep-space view
-  body.classList.toggle('no-planet', lastVisited === 5);
+  body.classList.remove('is-destination-map','is-briefing');
+  pendingDest = -1;
+  setOrbitPlanet(lastVisited);
   document.querySelector('.planet.is-active')?.classList.remove('spin');
 }
-function showMenu(){
+function showDestinationMap(){
   body.classList.remove('is-orbit');
-  body.classList.add('is-menu');
-  document.querySelector('.planet.is-active')?.classList.add('spin');
+  body.classList.remove('is-briefing');
+  body.classList.add('is-destination-map');
+  mapFocus = lastVisited;
+  setMapFocus(mapFocus);
+  rows[mapFocus]?.focus();
 }
-document.getElementById('destBtn').addEventListener('click', showMenu);
+function selectDestination(i){
+  pendingDest = i;
+  body.classList.remove('is-destination-map');
+  body.classList.add('is-orbit','is-briefing');
+  setOrbitPlanet(lastVisited);
+  document.getElementById('briefingWorld').textContent = DEST[i].world;
+  document.getElementById('briefingTitle').textContent = DEST[i].proj;
+  document.getElementById('briefingLocation').textContent = DEST[i].loc;
+}
+document.getElementById('destBtn').addEventListener('click', showDestinationMap);
 document.getElementById('backBtn').addEventListener('click', showOrbit);
+document.getElementById('launchSelected').addEventListener('click',()=>{if(pendingDest>=0) launch(pendingDest)});
 
 /* planet preview on hover */
 const planets = document.querySelectorAll('.planet');
 const rows = document.querySelectorAll('.dest-row');
-let active = 0;
-function setActive(i){
-  active = i;
+function setOrbitPlanet(i){
   planets.forEach(p=>{
     const on = +p.dataset.p === i;
     p.classList.toggle('is-active', on);
     if(!on) p.classList.remove('spin');
   });
-  if(body.classList.contains('is-menu')){
-    document.querySelector('.planet.is-active')?.classList.add('spin');
-  }
-  rows.forEach(r=>r.classList.toggle('is-hover', +r.dataset.i === i));
+}
+function setMapFocus(i){
+  mapFocus = (i + DEST.length) % DEST.length;
+  rows.forEach(r=>{
+    const focused = +r.dataset.i === mapFocus;
+    r.classList.toggle('is-hover', focused);
+    r.classList.toggle('is-current', +r.dataset.i === lastVisited);
+    r.setAttribute('aria-current', +r.dataset.i === lastVisited ? 'location' : 'false');
+  });
 }
 rows.forEach(r=>{
-  r.addEventListener('mouseenter', ()=>setActive(+r.dataset.i));
-  r.addEventListener('click', ()=>launch(+r.dataset.i));
+  r.addEventListener('focus',()=>setMapFocus(+r.dataset.i));
+  r.addEventListener('mouseenter',()=>setMapFocus(+r.dataset.i));
+  r.addEventListener('click',()=>selectDestination(+r.dataset.i));
 });
 
 /* warp + modal */
@@ -2341,7 +2143,7 @@ for (let k = 0; k < NUM_LS_STREAKS; k++) {
 let warpBufferTimer = null;   // 2s debounce timer
 let warpPhaseTimers = [];     // chain timers (for cleanup if needed)
 let warpState = 'idle';       // idle | waiting | bright | flying-out | lightspeed | flying-in | settling
-let warpInQueued = false;     // user closed mid-warp-out, schedule warp-in once lightspeed reached
+let warpInQueued = false;
 
 function clearWarpTimers(){
   if (warpBufferTimer){ clearTimeout(warpBufferTimer); warpBufferTimer = null; }
@@ -2371,11 +2173,13 @@ function beginWarpOut(){
       // T+2s: lightspeed (sustained)
       warpState = 'lightspeed';
       setWarpClass('is-warp-lightspeed');
-      // Lightspeed reached — commit this visit. Closing the modal
-      // before lightspeed is hit will not update the showcase.
-      if (activeWarpDest >= 0){
+      if(activeWarpDest >= 0){
         lastVisited = activeWarpDest;
         activeWarpDest = -1;
+        pendingDest = -1;
+        body.classList.remove('is-briefing');
+        body.classList.add('is-orbit');
+        setOrbitPlanet(lastVisited);
       }
       if (warpInQueued){
         warpInQueued = false;
@@ -2396,6 +2200,7 @@ function beginWarpIn(){
     warpPhaseTimers.push(setTimeout(() => {
       warpState = 'idle';
       setWarpClass(null);
+      document.getElementById('launchSelected').disabled = false;
     }, 1000));
   }, 1500));
 }
@@ -2415,11 +2220,15 @@ function endWarpSequence(){
     // Closed before buffer elapsed — abort entirely
     clearWarpTimers();
     warpState = 'idle';
+    activeWarpDest = -1;
+    document.getElementById('launchSelected').disabled = false;
     return;
   }
   if (warpState === 'lightspeed'){
+    if(warpInQueued) return;
     // Hold lightspeed for 1 more second, then return
-    warpPhaseTimers.push(setTimeout(beginWarpIn, 1000));
+    warpInQueued = true;
+    warpPhaseTimers.push(setTimeout(()=>{warpInQueued=false;beginWarpIn()}, 1000));
     return;
   }
   // Mid warp-out chain — let it finish into lightspeed, then trigger
@@ -2428,6 +2237,7 @@ function endWarpSequence(){
 }
 
 function launch(i){
+  if(warpState !== 'idle' || activeWarpDest >= 0) return;
   // No travel animation when clicking the planet currently on showcase
   if (i === lastVisited){
     openModal(i);
@@ -2435,6 +2245,7 @@ function launch(i){
   }
   const d = DEST[i];
   activeWarpDest = i;
+  document.getElementById('launchSelected').disabled = true;
   warp.style.setProperty('--fill', d.fill);
   warp.classList.add('is-on');
   streaksEl.classList.add('is-on');
@@ -2449,23 +2260,40 @@ function launch(i){
   }, 900);
 }
 
+let modalOpener = null;
 function openModal(i){
+  modalOpener = document.activeElement;
   const d = DEST[i];
   document.getElementById('mProj').textContent = d.proj;
   document.getElementById('mWorld').textContent = d.world;
   document.getElementById('mLoc').textContent = d.loc;
   document.getElementById('mDesc').textContent = d.desc;
+  [['mRoleLabel','mRole'],['mStackLabel','mStack'],['mYearLabel','mYear']].forEach(([labelId,valueId],index)=>{
+    document.getElementById(labelId).textContent = d.meta[index][0];
+    document.getElementById(valueId).textContent = d.meta[index][1];
+  });
   const stat = document.getElementById('mStat');
   stat.textContent = d.stat;
   stat.style.color = d.sCol;
   const stripe = document.getElementById('modalStripe');
   stripe.style.background = d.stripe;
   stripe.style.boxShadow = '0 0 18px '+d.stripe;
-  document.getElementById('modalBtn').onclick = ()=>{
-    if(d.url && d.url!=='#') window.open(d.url,'_blank');
-    else closeModal();
-  };
+  const links = document.getElementById('modalLinks');
+  links.querySelectorAll('a').forEach(link=>link.remove());
+  const availableLinks = [['GITHUB',d.githubUrl],['WEBSITE',d.websiteUrl]]
+    .filter(([,url])=>/^https?:\/\//i.test(url || ''));
+  document.getElementById('modalEmpty').hidden = availableLinks.length > 0;
+  availableLinks.forEach(([label,url])=>{
+    const link = document.createElement('a');
+    link.className = 'modal-link';
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = label;
+    links.appendChild(link);
+  });
   modal.classList.add('is-open');
+  document.getElementById('modalClose').focus();
   // Only start the lightspeed sequence when traveling to a different planet
   if (i !== lastVisited){
     startWarpSequence();
@@ -2474,25 +2302,37 @@ function openModal(i){
 function closeModal(){
   modal.classList.remove('is-open');
   endWarpSequence();
+  if(modalOpener?.isConnected) modalOpener.focus();
+  modalOpener = null;
 }
 document.getElementById('modalClose').onclick = closeModal;
 modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
+function trapDialogFocus(e, dialog){
+  const focusable = [...dialog.querySelectorAll('a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])')]
+    .filter(el=>el.getClientRects().length > 0);
+  if(!focusable.length){e.preventDefault();dialog.focus();return}
+  const first = focusable[0], last = focusable[focusable.length-1];
+  if(!dialog.contains(document.activeElement)){e.preventDefault();first.focus()}
+  else if(e.shiftKey && document.activeElement===first){e.preventDefault();last.focus()}
+  else if(!e.shiftKey && document.activeElement===last){e.preventDefault();first.focus()}
+}
 document.addEventListener('keydown', e=>{
   if(e.key==='Escape'){
     if(modal.classList.contains('is-open')){ closeModal(); return; }
     if(isGuardianMenuOpen()){ closeGuardianMenu(); return; }
-    if(body.classList.contains('is-menu')){ showOrbit(); return; }
+    if(body.classList.contains('is-destination-map')){ showOrbit(); return; }
     openGuardianMenu();
     return;
   }
-  if(modal.classList.contains('is-open')) return;
-  if(isGuardianMenuOpen()) return;
+  if(modal.classList.contains('is-open')){if(e.key==='Tab') trapDialogFocus(e,modal);return}
+  if(isGuardianMenuOpen()){if(e.key==='Tab') trapDialogFocus(e,guardianMenu);return}
+  if(body.classList.contains('is-destination-map')){
+    if(e.key==='ArrowDown'||e.key==='ArrowRight'){setMapFocus(mapFocus+1);rows[mapFocus]?.focus()}
+    if(e.key==='ArrowUp'||e.key==='ArrowLeft'){setMapFocus(mapFocus-1);rows[mapFocus]?.focus()}
+    return;
+  }
   if(body.classList.contains('is-orbit')){
-    if(e.key==='Enter' || e.key===' ') showMenu();
-  } else {
-    if(e.key==='ArrowDown') setActive((active+1)%DEST.length);
-    if(e.key==='ArrowUp')   setActive((active-1+DEST.length)%DEST.length);
-    if(e.key==='Enter')     launch(active);
+    if(e.key==='Enter' || e.key===' ') showDestinationMap();
   }
 });
 
@@ -2502,9 +2342,28 @@ document.addEventListener('keydown', e=>{
 const guardianMenu = document.getElementById('guardianMenu');
 const gmTabs = document.querySelectorAll('.gm-tab');
 const gmPages = document.querySelectorAll('.gm-page');
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const playerCard = document.querySelector('.player-card');
+let menuOpener = null;
 
-function openGuardianMenu(){ guardianMenu.classList.add('is-open'); }
-function closeGuardianMenu(){ guardianMenu.classList.remove('is-open'); }
+function setMenuExpanded(expanded){
+  mobileMenuBtn.setAttribute('aria-expanded',String(expanded));
+  playerCard.setAttribute('aria-expanded',String(expanded));
+}
+function openGuardianMenu(){
+  if(isGuardianMenuOpen()) return;
+  menuOpener = document.activeElement;
+  guardianMenu.classList.add('is-open');
+  setMenuExpanded(true);
+  requestAnimationFrame(()=>guardianMenu.querySelector('.gm-tab.is-active')?.focus());
+}
+function closeGuardianMenu(){
+  if(!isGuardianMenuOpen()) return;
+  guardianMenu.classList.remove('is-open');
+  setMenuExpanded(false);
+  if(menuOpener?.isConnected) menuOpener.focus();
+  menuOpener = null;
+}
 function isGuardianMenuOpen(){ return guardianMenu.classList.contains('is-open'); }
 
 gmTabs.forEach(tab => {
@@ -2516,18 +2375,24 @@ gmTabs.forEach(tab => {
 });
 
 /* Click the player's calling card to open the menu */
-document.querySelector('.player-card').addEventListener('click', openGuardianMenu);
+playerCard.addEventListener('click', openGuardianMenu);
+playerCard.addEventListener('keydown',e=>{
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();openGuardianMenu()}
+});
+mobileMenuBtn.addEventListener('click',openGuardianMenu);
+document.getElementById('gmDismissBtn').addEventListener('click',closeGuardianMenu);
 
 /* custom cursor */
 const cursor = document.getElementById('cursor');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let cx=0, cy=0, tx=0, ty=0;
 window.addEventListener('mousemove', e=>{ tx=e.clientX; ty=e.clientY; });
 function tick(){
   cx += (tx-cx)*.22; cy += (ty-cy)*.22;
   cursor.style.transform = `translate(${cx}px,${cy}px) translate(-50%,-50%)`;
-  requestAnimationFrame(tick);
+  if(!reduceMotion) requestAnimationFrame(tick);
 }
-tick();
+if(!reduceMotion) tick();
 function wireHot(sel){
   document.querySelectorAll(sel).forEach(el=>{
     el.addEventListener('mouseenter', ()=>cursor.classList.add('is-hot'));
