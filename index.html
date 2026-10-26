@@ -2100,6 +2100,7 @@ let lastVisited = 0;
 let activeWarpDest = -1;
 let pendingDest = -1;
 let mapFocus = 0;
+let returnToMapAfterModal = false;
 
 function showOrbit(){
   body.classList.add('is-orbit');
@@ -2112,6 +2113,7 @@ function showDestinationMap(){
   body.classList.remove('is-orbit');
   body.classList.remove('is-briefing');
   body.classList.add('is-destination-map');
+  pendingDest = -1;
   mapFocus = lastVisited;
   setMapFocus(mapFocus);
   rows[mapFocus]?.focus();
@@ -2280,8 +2282,9 @@ function endWarpSequence(){
 
 function launch(i){
   if(warpState !== 'idle' || activeWarpDest >= 0) return;
+  returnToMapAfterModal = i === lastVisited;
   // No travel animation when clicking the planet currently on showcase
-  if (i === lastVisited){
+  if (returnToMapAfterModal){
     openModal(i);
     return;
   }
@@ -2344,6 +2347,12 @@ function openModal(i){
 function closeModal(){
   modal.classList.remove('is-open');
   endWarpSequence();
+  if(returnToMapAfterModal){
+    returnToMapAfterModal = false;
+    modalOpener = null;
+    showDestinationMap();
+    return;
+  }
   if(modalOpener?.isConnected) modalOpener.focus();
   modalOpener = null;
 }
