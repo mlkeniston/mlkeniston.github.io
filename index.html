@@ -860,6 +860,7 @@ body.is-destination-map .dest-panel{transform:translateY(0);opacity:1;visibility
 .panel-head .ph-r{
   font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:var(--grey);
 }
+.panel-head .back-btn{margin-left:12px;flex-shrink:0}
 
 .dest-list{position:relative;flex:1;min-height:0;overflow:hidden;pointer-events:none}
 .dest-row{
@@ -943,28 +944,19 @@ body.is-destination-map .dest-panel{transform:translateY(0);opacity:1;visibility
 .back-btn{
   position:relative;bottom:auto;left:auto;z-index:auto;
   display:flex;align-items:center;gap:12px;
-  padding:8px 12px 8px 0;
-  background:transparent;border:0;
+  min-height:44px;padding:0 14px;
+  border:1px solid rgba(201,169,110,.72);background:rgba(2,4,12,.78);
   cursor:pointer;
   color:var(--gold);
-  font-family:var(--display);font-weight:400;font-size:13px;letter-spacing:.32em;
+  font-family:var(--display);font-weight:500;font-size:12px;letter-spacing:.16em;
   text-transform:uppercase;
-  transition:color .25s ease;
+  white-space:nowrap;transition:color .25s ease,background .25s ease,border-color .25s ease;
 }
 body.is-destination-map .back-btn{color:var(--gold)}
-.back-btn:hover{color:var(--white)}
+.back-btn:hover{color:var(--white);background:rgba(201,169,110,.16);border-color:var(--gold)}
 .back-btn .arr{font-family:var(--mono);transition:transform .2s}
 .back-btn:hover .arr{transform:translateX(-3px)}
-@media (hover:hover) and (pointer:fine){
-  body.is-destination-map .back-btn{
-    min-height:42px;padding:0 16px;gap:12px;
-    border:1px solid rgba(201,169,110,.72);
-    background:rgba(2,4,12,.76);
-    box-shadow:0 0 18px rgba(201,169,110,.12);
-  }
-  body.is-destination-map .back-btn:hover{background:rgba(201,169,110,.16);border-color:var(--gold)}
-  body.is-destination-map .back-btn:focus-visible{outline:2px solid var(--white);outline-offset:3px}
-}
+.back-btn:focus-visible{outline:2px solid var(--white);outline-offset:3px}
 
 /* ═══════════════════════════════════════════════════════
    MODAL
@@ -1495,33 +1487,37 @@ body.is-briefing .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:non
   .player-card{display:none}
 }
 @media (max-width:1100px) and (orientation:landscape) and (pointer:coarse){
+  .guardian-menu{--gm-bone-dim:rgba(245,239,222,.82);--gm-bone-edge:rgba(245,239,222,.32);--gm-panel-edge:rgba(245,239,222,.3)}
   .gm-grid{grid-template-columns:1fr 1fr;gap:10px}
   .gm-section-wide,.gm-section-full{grid-column:span 2}
-  .gm-body{padding:14px 18px}
-  .gm-page-head{margin-bottom:14px}
-  .gm-page-tag{font-size:8px;letter-spacing:.24em}
-  .gm-page-title{font-size:clamp(25px,4vw,34px);margin-top:5px}
+  .gm-body{padding:16px 18px}
+  .gm-page-head{margin-bottom:16px}
+  .gm-page-tag{font-size:10px;letter-spacing:.2em}
+  .gm-page-title{font-size:clamp(30px,4vw,38px);margin-top:5px}
   .gm-page-rule{margin-top:8px}
-  .gm-section{padding:12px 14px}
-  .gm-section-label{font-size:9px;margin-bottom:8px;padding-bottom:6px}
-  .gm-section-text{font-size:13px;line-height:1.45}
-  .gm-stat{padding:6px 0}
-  .gm-stat-k{font-size:9px;letter-spacing:.16em}
-  .gm-stat-v{font-size:12px;letter-spacing:.05em}
-  .gm-link{padding:7px 9px}
-  .gm-link-k{font-size:9px;letter-spacing:.18em}
-  .gm-link-v{font-size:12px;overflow-wrap:anywhere}
-  .gm-portrait-frame{min-height:0;height:clamp(78px,16vh,132px);flex:none;margin-bottom:8px}
-  .gm-portrait-name{font-size:12px}
-  .gm-portrait-role{font-size:9px}
-  .gm-header{padding:8px max(16px,env(safe-area-inset-right)) 8px max(16px,env(safe-area-inset-left))}
-  .gm-emblem{width:32px;height:32px}
-  .gm-emblem svg{width:18px;height:18px}
+  .gm-section{padding:14px 16px}
+  .gm-section-label{font-size:10px;margin-bottom:9px;padding-bottom:7px}
+  .gm-section-text{font-size:15px;line-height:1.5}
+  .gm-stat{padding:7px 0}
+  .gm-stat-k{font-size:10px;letter-spacing:.14em}
+  .gm-stat-v{font-size:13px;letter-spacing:.04em}
+  .gm-link{min-height:48px;padding:8px 10px}
+  .gm-link-k{font-size:10px;letter-spacing:.14em}
+  .gm-link-v{font-size:13px;overflow-wrap:anywhere}
+  .gm-portrait-frame{min-height:0;height:clamp(105px,22vh,170px);flex:none;margin-bottom:8px}
+  .gm-portrait-name{font-size:13px}
+  .gm-portrait-role{font-size:10px}
+  .gm-header{padding:10px max(16px,env(safe-area-inset-right)) 10px max(16px,env(safe-area-inset-left))}
+  .gm-emblem{width:36px;height:36px}
+  .gm-emblem svg{width:20px;height:20px}
   .gm-player{gap:8px}
-  .gm-pname{font-size:14px}
-  .gm-tabs{height:38px}
-  .gm-tab{padding:0 12px;font-size:11px;letter-spacing:.16em}
-  .gm-footer{padding:7px max(16px,env(safe-area-inset-right)) max(7px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));font-size:8px;letter-spacing:.16em}
+  .gm-pname{font-size:15px}
+  .gm-tabs{height:46px}
+  .gm-tab{min-height:44px;padding:0 14px;font-size:13px;letter-spacing:.12em}
+  .gm-footer{padding:8px max(16px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));font-size:10px;letter-spacing:.12em}
+  .gm-dismiss{min-height:44px;font-size:11px}
+  .gm-foot-key{font-size:10px}
+  .back-btn{min-height:48px;padding:0 11px;font-size:10px;letter-spacing:.1em;gap:7px}
 }
 @media (max-width:520px){
   .hud-tl{font-size:9px;letter-spacing:.14em}
@@ -1542,10 +1538,10 @@ body.is-briefing .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:non
   .dest-tag{display:none}
   .panel-head{padding-bottom:8px}
   .panel-head .ph-l{font-size:11px;letter-spacing:.2em}
-  .panel-head .ph-r{font-size:7px;letter-spacing:.14em}
+  .panel-head .ph-r{display:none}
   .panel-foot{min-height:52px;gap:4px;padding-top:6px;letter-spacing:.12em}
   .panel-foot .pf-l{display:none}
-  .back-btn{font-size:9px;letter-spacing:.12em;padding:5px 4px 5px 0;gap:6px}
+  .back-btn{font-size:9px;letter-spacing:.08em;padding:0 8px;gap:6px}
   .back-btn .arr{font-size:10px}
   .dest-row.is-current::after{font-size:6px;letter-spacing:.12em}
   .destination-briefing{left:16px;right:16px;bottom:20px;gap:10px}
@@ -1562,7 +1558,8 @@ body.is-briefing .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:non
   body{cursor:auto}
   .cursor{display:none}
   .gm-pinfo{display:none}
-  .gm-tab{padding:0 14px;font-size:11px;letter-spacing:.22em}
+  .gm-tabs{height:46px}
+  .gm-tab{min-height:44px;padding:0 14px;font-size:12px;letter-spacing:.12em}
   .gm-tab-ico{display:none}
   .gm-page-title{font-size:34px}
   .gm-body{padding:24px 18px}
@@ -1602,7 +1599,7 @@ body.is-briefing .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:non
   .dot{width:clamp(44px,9vh,68px);height:clamp(44px,9vh,68px)}
   .dest-world{font-size:10px;letter-spacing:.12em}
   .panel-foot{min-height:42px;padding-top:5px}
-  .back-btn{font-size:10px;padding:4px 6px 4px 0}
+  .back-btn{min-height:44px;font-size:10px;padding:0 8px;letter-spacing:.08em}
   .ship-stage{width:min(78vw,680px);height:min(62vh,340px);top:50%}
   .gm-header{padding:max(8px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) 8px max(18px,env(safe-area-inset-left))}
   .gm-footer{padding:8px max(18px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}
@@ -1816,6 +1813,10 @@ body.is-briefing .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:non
   <div class="panel-head">
     <div class="ph-l">SET DESTINATION</div>
     <div class="ph-r">SOL SYSTEM // 03 PROJECTS</div>
+    <button class="back-btn" id="backBtn" type="button" aria-label="Exit destinations and return to orbit">
+      <span class="arr" aria-hidden="true">⟵</span>
+      <span>RETURN TO ORBIT</span>
+    </button>
   </div>
   <div class="dest-list" id="destList" role="group" aria-label="Portfolio destinations">
     <svg class="map-orbits" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true">
@@ -1836,10 +1837,6 @@ body.is-briefing .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:non
     </details>
   </div>
   <div class="panel-foot">
-    <button class="back-btn" id="backBtn" type="button">
-      <span class="arr">⟵</span>
-      <span>RETURN TO ORBIT</span>
-    </button>
     <span class="pf-l">SELECT TO ENGAGE</span>
     <span class="pf-r">ARROWS NAVIGATE · ENTER SELECT</span>
   </div>
@@ -1870,8 +1867,8 @@ body.is-briefing .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:non
       </div>
     </div>
 
-    <div class="gm-tabs">
-      <button class="gm-tab is-active" data-page="about">
+    <div class="gm-tabs" role="tablist" aria-label="Portfolio menu pages">
+      <button class="gm-tab is-active" id="gm-tab-about" role="tab" aria-selected="true" aria-controls="gm-page-about" tabindex="0" data-page="about">
         <span class="gm-tab-ico">
           <svg viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="8.5" r="3.6" stroke="currentColor" stroke-width="1.5"/>
@@ -1880,7 +1877,7 @@ body.is-briefing .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:non
         </span>
         <span>ABOUT</span>
       </button>
-      <button class="gm-tab" data-page="site">
+      <button class="gm-tab" id="gm-tab-site" role="tab" aria-selected="false" aria-controls="gm-page-site" tabindex="-1" data-page="site">
         <span class="gm-tab-ico">
           <svg viewBox="0 0 24 24" fill="none">
             <rect x="3" y="5" width="18" height="13" rx="1" stroke="currentColor" stroke-width="1.5"/>
@@ -1895,7 +1892,7 @@ body.is-briefing .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:non
 
   <div class="gm-body">
     <!-- ABOUT page -->
-    <div class="gm-page is-active" data-page="about">
+    <div class="gm-page is-active" id="gm-page-about" role="tabpanel" aria-labelledby="gm-tab-about" tabindex="0" data-page="about">
       <div class="gm-page-head">
         <span class="gm-page-tag">PROFILE // DOSSIER</span>
         <h1 class="gm-page-title">ABOUT</h1>
@@ -1945,7 +1942,7 @@ body.is-briefing .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:non
     </div>
 
     <!-- WEBSITE page -->
-    <div class="gm-page" data-page="site">
+    <div class="gm-page" id="gm-page-site" role="tabpanel" aria-labelledby="gm-tab-site" tabindex="0" data-page="site">
       <div class="gm-page-head">
         <span class="gm-page-tag">CODEX // DESIGN NOTES</span>
         <h1 class="gm-page-title">WEBSITE</h1>
@@ -2411,11 +2408,24 @@ function closeGuardianMenu(){
 }
 function isGuardianMenuOpen(){ return guardianMenu.classList.contains('is-open'); }
 
+function activateMenuTab(tab,focus=false){
+  gmTabs.forEach(t=>{
+    const active=t===tab;
+    t.classList.toggle('is-active',active);
+    t.setAttribute('aria-selected',String(active));
+    t.tabIndex=active?0:-1;
+  });
+  gmPages.forEach(p=>p.classList.toggle('is-active',p.dataset.page===tab.dataset.page));
+  if(focus) tab.focus();
+}
 gmTabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    const page = tab.dataset.page;
-    gmTabs.forEach(t => t.classList.toggle('is-active', t === tab));
-    gmPages.forEach(p => p.classList.toggle('is-active', p.dataset.page === page));
+  tab.addEventListener('click', () => activateMenuTab(tab));
+  tab.addEventListener('keydown', e => {
+    if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key)) return;
+    e.preventDefault();
+    const i = [...gmTabs].indexOf(tab);
+    const next = e.key === 'Home' ? gmTabs[0] : e.key === 'End' ? gmTabs[gmTabs.length-1] : gmTabs[(i + (e.key === 'ArrowRight' ? 1 : -1) + gmTabs.length) % gmTabs.length];
+    activateMenuTab(next,true);
   });
 });
 
