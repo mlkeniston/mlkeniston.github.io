@@ -48,7 +48,6 @@ body{
 .space{
   position:fixed;inset:-12px;
   translate:var(--orbit-pointer-x,0px) var(--orbit-pointer-y,0px);
-  transition:translate .3s cubic-bezier(.22,.61,.36,1);
   background:
     radial-gradient(ellipse 80% 60% at 20% 20%, #0a1830 0%, transparent 60%),
     radial-gradient(ellipse 60% 40% at 80% 90%, #0a1428 0%, transparent 60%),
@@ -184,7 +183,7 @@ body{
   position:absolute;left:18%;top:12%;width:0;height:0;
   translate:var(--orbit-pointer-x,0px) var(--orbit-pointer-y,0px);
   pointer-events:none;opacity:0;
-  transition:translate .3s cubic-bezier(.22,.61,.36,1),opacity 1.2s ease;
+  transition:opacity 1.2s ease;
 }
 body.is-orbit .sun{opacity:1}
 .sun-core{
@@ -235,7 +234,6 @@ body.is-orbit .sun{opacity:1}
     margin-left 1.4s cubic-bezier(.7,0,.2,1),
     left 1.4s cubic-bezier(.7,0,.2,1),
     transform 1.4s cubic-bezier(.7,0,.2,1),
-    translate .3s cubic-bezier(.22,.61,.36,1),
     opacity 1.4s ease;
 }
 body.is-destination-map .planet-stage{opacity:0;pointer-events:none}
@@ -375,7 +373,6 @@ body.is-destination-map .ship-stage{opacity:0}
   pointer-events:none;
   z-index:5;
   transform:translateX(0);
-  transition:translate .3s cubic-bezier(.22,.61,.36,1);
 }
 body.is-warp-out-flying .ship-warp-wrapper{
   animation:warpFlyOut 1s cubic-bezier(.5,0,.5,1) forwards;
@@ -778,6 +775,7 @@ body.is-orbit .dest-btn{opacity:1;pointer-events:auto}
 /* Selected destination briefing stays on the current orbit scene. */
 .destination-briefing{
   position:absolute;left:clamp(20px,3vw,42px);right:clamp(20px,3vw,42px);bottom:clamp(24px,3vw,42px);
+  translate:var(--orbit-pointer-x,0px) var(--orbit-pointer-y,0px);
   z-index:16;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
   opacity:0;pointer-events:none;transform:translateY(10px);
   transition:opacity .45s ease,transform .45s cubic-bezier(.2,.7,.2,1);
@@ -868,7 +866,7 @@ body.is-destination-map .hud{visibility:hidden;pointer-events:none}
   z-index:20;
   opacity:0;pointer-events:none;visibility:hidden;
   transform:translateY(8px);
-  transition:translate .3s cubic-bezier(.22,.61,.36,1), transform .55s cubic-bezier(.2,.7,.2,1), opacity .45s ease, visibility .45s;
+  transition:transform .55s cubic-bezier(.2,.7,.2,1), opacity .45s ease, visibility .45s;
 }
 body.is-destination-map .dest-panel{transform:translateY(0);opacity:1;visibility:visible;pointer-events:auto}
 
@@ -2102,30 +2100,65 @@ let mapFocus = 0;
 let returnToMapAfterModal = false;
 const towerMenu = document.querySelector('.tower-marker');
 const destinationPanel = document.getElementById('destPanel');
-const orbitParallaxTargets = document.querySelectorAll('.space,.sun,#planetStage,.ship-warp-wrapper');
+const orbitParallaxTargets = document.querySelectorAll('.space,.sun,#planetStage,.ship-warp-wrapper,#destinationBriefing');
 const warpClasses = ['is-warp-bright','is-warp-out-flying','is-warp-lightspeed','is-warp-in-flying','is-warp-settling'];
+const parallax = {
+  orbit:{x:0,y:0,targetX:0,targetY:0},
+  destination:{x:0,y:0,targetX:0,targetY:0}
+};
+let parallaxFrame = 0;
+let parallaxLastTime = 0;
+function scheduleParallax(){
+  if(!parallaxFrame) parallaxFrame = requestAnimationFrame(animateParallax);
+}
+function animateParallax(time){
+  const dt = Math.min(time - (parallaxLastTime || time), 64);
+  parallaxLastTime = time;
+  const blend = 1 - Math.exp(-dt / 115);
+  let moving = false;
+  for(const key of ['orbit','destination']){
+    const state = parallax[key];
+    state.x += (state.targetX - state.x) * blend;
+    state.y += (state.targetY - state.y) * blend;
+    if(Math.abs(state.targetX-state.x) < .02 && Math.abs(state.targetY-state.y) < .02){
+      state.x = state.targetX;
+      state.y = state.targetY;
+    }else moving = true;
+    const targets = key === 'orbit' ? orbitParallaxTargets : [destinationPanel];
+    const prefix = key === 'orbit' ? 'orbit' : 'dest';
+    targets.forEach(el=>{
+      el.style.setProperty(`--${prefix}-pointer-x`,`${state.x.toFixed(2)}px`);
+      el.style.setProperty(`--${prefix}-pointer-y`,`${state.y.toFixed(2)}px`);
+    });
+  }
+  if(moving) parallaxFrame = requestAnimationFrame(animateParallax);
+  else {parallaxFrame = 0;parallaxLastTime = 0;}
+}
+function setParallaxTarget(key,x=0,y=0){
+  parallax[key].targetX = x;
+  parallax[key].targetY = y;
+  scheduleParallax();
+}
 function resetDestinationParallax(){
-  destinationPanel.style.setProperty('--dest-pointer-x','0px');
-  destinationPanel.style.setProperty('--dest-pointer-y','0px');
+  setParallaxTarget('destination');
 }
 function resetOrbitParallax(){
-  orbitParallaxTargets.forEach(el=>{
-    el.style.setProperty('--orbit-pointer-x','0px');
-    el.style.setProperty('--orbit-pointer-y','0px');
-  });
+  setParallaxTarget('orbit');
 }
 window.addEventListener('pointermove',e=>{
-  if(e.pointerType !== 'mouse' || body.classList.contains('is-guardian-menu-open')) return;
+  if(e.pointerType !== 'mouse' || body.classList.contains('is-guardian-menu-open')){
+    resetDestinationParallax();resetOrbitParallax();return;
+  }
   const x = .5 - e.clientX / window.innerWidth;
   const y = .5 - e.clientY / window.innerHeight;
   if(body.classList.contains('is-destination-map')){
-    destinationPanel.style.setProperty('--dest-pointer-x',`${x * 16}px`);
-    destinationPanel.style.setProperty('--dest-pointer-y',`${y * 10}px`);
-  }else if(body.classList.contains('is-orbit') && !body.classList.contains('is-briefing') && !warpClasses.some(cls=>body.classList.contains(cls))){
-    orbitParallaxTargets.forEach(el=>{
-      el.style.setProperty('--orbit-pointer-x',`${x * 16}px`);
-      el.style.setProperty('--orbit-pointer-y',`${y * 10}px`);
-    });
+    setParallaxTarget('destination',x * 16,y * 10);
+    resetOrbitParallax();
+  }else if(body.classList.contains('is-orbit') && !warpClasses.some(cls=>body.classList.contains(cls))){
+    setParallaxTarget('orbit',x * 16,y * 10);
+    resetDestinationParallax();
+  }else{
+    resetDestinationParallax();resetOrbitParallax();
   }
 });
 window.addEventListener('pointerout',e=>{if(!e.relatedTarget){resetDestinationParallax();resetOrbitParallax()}});
