@@ -852,6 +852,7 @@ body.is-destination-map .hud{visibility:hidden;pointer-events:none}
 .dest-panel{
   position:fixed;inset:0;
   display:flex;flex-direction:column;
+  translate:var(--dest-pointer-x,0px) var(--dest-pointer-y,0px);
   padding:max(22px,env(safe-area-inset-top)) max(22px,env(safe-area-inset-right)) max(22px,env(safe-area-inset-bottom)) max(22px,env(safe-area-inset-left));
   background:
     radial-gradient(ellipse 48% 42% at 50% 52%, rgba(91,200,216,.06), transparent 72%),
@@ -860,7 +861,7 @@ body.is-destination-map .hud{visibility:hidden;pointer-events:none}
   z-index:20;
   opacity:0;pointer-events:none;visibility:hidden;
   transform:translateY(8px);
-  transition:transform .55s cubic-bezier(.2,.7,.2,1), opacity .45s ease, visibility .45s;
+  transition:translate .18s ease-out, transform .55s cubic-bezier(.2,.7,.2,1), opacity .45s ease, visibility .45s;
 }
 body.is-destination-map .dest-panel{transform:translateY(0);opacity:1;visibility:visible;pointer-events:auto}
 
@@ -2093,6 +2094,19 @@ let pendingDest = -1;
 let mapFocus = 0;
 let returnToMapAfterModal = false;
 const towerMenu = document.querySelector('.tower-marker');
+const destinationPanel = document.getElementById('destPanel');
+function resetDestinationParallax(){
+  destinationPanel.style.setProperty('--dest-pointer-x','0px');
+  destinationPanel.style.setProperty('--dest-pointer-y','0px');
+}
+window.addEventListener('pointermove',e=>{
+  if(e.pointerType !== 'mouse' || !body.classList.contains('is-destination-map')) return;
+  const x = .5 - e.clientX / window.innerWidth;
+  const y = .5 - e.clientY / window.innerHeight;
+  destinationPanel.style.setProperty('--dest-pointer-x',`${x * 16}px`);
+  destinationPanel.style.setProperty('--dest-pointer-y',`${y * 10}px`);
+});
+window.addEventListener('pointerout',e=>{if(!e.relatedTarget) resetDestinationParallax()});
 document.addEventListener('click',e=>{
   if(towerMenu.open&&!towerMenu.contains(e.target)) towerMenu.open=false;
 });
@@ -2100,6 +2114,7 @@ towerMenu.querySelectorAll('.tower-links a').forEach(link=>link.addEventListener
 
 function showOrbit(){
   cancelLaunchCountdown();
+  resetDestinationParallax();
   towerMenu.open = false;
   body.classList.add('is-orbit');
   body.classList.remove('is-destination-map','is-briefing');
@@ -2109,6 +2124,7 @@ function showOrbit(){
 }
 function showDestinationMap(){
   cancelLaunchCountdown();
+  resetDestinationParallax();
   body.classList.remove('is-orbit');
   body.classList.remove('is-briefing');
   body.classList.add('is-destination-map');
@@ -2119,6 +2135,7 @@ function showDestinationMap(){
 }
 function selectDestination(i){
   cancelLaunchCountdown();
+  resetDestinationParallax();
   towerMenu.open = false;
   pendingDest = i;
   body.classList.remove('is-destination-map');
