@@ -948,12 +948,11 @@ body.is-destination-map .dest-panel{transform:translateY(0);opacity:1;visibility
 .map-orbits .orbit-accent{stroke:rgba(201,169,110,.2);stroke-dasharray:2 8}
 .tower-marker{position:absolute;left:50%;top:20%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;color:var(--white);font-family:var(--display);pointer-events:auto;text-shadow:0 0 12px rgba(220,232,242,.6);z-index:2}
 .tower-trigger{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:84px;min-height:48px;padding:0;background:transparent;border:0;color:inherit;font:inherit;cursor:pointer;list-style:none}
-.tower-trigger::-webkit-details-marker,.tower-trigger::marker{display:none;content:""}
 .tower-trigger:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .tower-sphere{width:clamp(29px,4.2vw,54px);aspect-ratio:1;border:1px solid rgba(238,244,249,.9);border-radius:50%;background:radial-gradient(circle at 32% 25%,#fff 0 9%,#e8edf0 34%,#cbd4da 65%,#8796a2 100%);box-shadow:inset -7px -6px 12px rgba(44,58,70,.35),0 0 10px rgba(225,238,248,.55),0 0 25px rgba(197,220,239,.25)}
 .tower-label{font-size:9px;letter-spacing:.25em;white-space:nowrap}
 .tower-links{position:absolute;top:calc(100% + 5px);left:50%;transform:translateX(-50%);display:none;flex-direction:column;gap:4px;padding:5px;background:rgba(2,4,12,.94);border:1px solid rgba(201,169,110,.55);pointer-events:auto}
-.tower-marker[open] .tower-links{display:flex}
+.tower-marker.is-open .tower-links{display:flex}
 .tower-links a{display:flex;align-items:center;justify-content:center;min-width:96px;min-height:44px;padding:6px 10px;color:var(--gold);font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-decoration:none;border:1px solid rgba(201,169,110,.3)}
 .tower-links a:hover,.tower-links a:focus-visible{color:var(--white);border-color:var(--white);outline:none}
 @media (max-width:1100px) and (orientation:landscape) and (pointer:coarse){
@@ -1822,16 +1821,16 @@ body.is-warp-settling .mobile-menu-btn{visibility:hidden;opacity:0;pointer-event
       <ellipse cx="500" cy="300" rx="225" ry="150" transform="rotate(-32 500 300)" />
       <path d="M80 302 C250 80 720 40 920 270" />
     </svg>
-    <details class="tower-marker">
-      <summary class="tower-trigger" aria-label="The Tower. Show personal profile links.">
+    <div class="tower-marker">
+      <button class="tower-trigger" type="button" aria-label="The Tower. Show personal profile links." aria-expanded="false" aria-controls="towerLinks">
         <span class="tower-sphere" aria-hidden="true"></span>
         <span class="tower-label">THE TOWER</span>
-      </summary>
-      <nav class="tower-links" aria-label="Personal profiles">
+      </button>
+      <nav class="tower-links" id="towerLinks" aria-label="Personal profiles">
         <a href="https://github.com/mlkeniston" target="_blank" rel="noopener noreferrer">GITHUB</a>
         <a href="https://www.linkedin.com/in/malcolm-keniston/" target="_blank" rel="noopener noreferrer">LINKEDIN</a>
       </nav>
-    </details>
+    </div>
   </div>
   <div class="panel-foot">
     <button class="back-btn" id="backBtn" type="button" aria-label="Exit destinations and return to orbit">
@@ -2099,6 +2098,7 @@ let pendingDest = -1;
 let mapFocus = 0;
 let returnToMapAfterModal = false;
 const towerMenu = document.querySelector('.tower-marker');
+const towerTrigger = towerMenu.querySelector('.tower-trigger');
 const destinationPanel = document.getElementById('destPanel');
 const orbitParallaxTargets = document.querySelectorAll('.space,.sun,#planetStage,.ship-warp-wrapper,#destinationBriefing');
 const warpClasses = ['is-warp-bright','is-warp-out-flying','is-warp-lightspeed','is-warp-in-flying','is-warp-settling'];
@@ -2162,16 +2162,21 @@ window.addEventListener('pointermove',e=>{
   }
 });
 window.addEventListener('pointerout',e=>{if(!e.relatedTarget){resetDestinationParallax();resetOrbitParallax()}});
+function setTowerMenuOpen(open){
+  towerMenu.classList.toggle('is-open',open);
+  towerTrigger.setAttribute('aria-expanded',String(open));
+}
+towerTrigger.addEventListener('click',()=>setTowerMenuOpen(!towerMenu.classList.contains('is-open')));
 document.addEventListener('click',e=>{
-  if(towerMenu.open&&!towerMenu.contains(e.target)) towerMenu.open=false;
+  if(towerMenu.classList.contains('is-open')&&!towerMenu.contains(e.target)) setTowerMenuOpen(false);
 });
-towerMenu.querySelectorAll('.tower-links a').forEach(link=>link.addEventListener('click',()=>{towerMenu.open=false}));
+towerMenu.querySelectorAll('.tower-links a').forEach(link=>link.addEventListener('click',()=>setTowerMenuOpen(false)));
 
 function showOrbit(){
   cancelLaunchCountdown();
   resetDestinationParallax();
   resetOrbitParallax();
-  towerMenu.open = false;
+  setTowerMenuOpen(false);
   body.classList.add('is-orbit');
   body.classList.remove('is-destination-map','is-briefing');
   pendingDest = -1;
@@ -2194,7 +2199,7 @@ function selectDestination(i){
   cancelLaunchCountdown();
   resetDestinationParallax();
   resetOrbitParallax();
-  towerMenu.open = false;
+  setTowerMenuOpen(false);
   pendingDest = i;
   body.classList.remove('is-destination-map');
   body.classList.add('is-orbit','is-briefing');
