@@ -477,16 +477,24 @@ body.is-warp-lightspeed .lightspeed{opacity:1}
 
 .ls-ship{
   position:absolute;z-index:1;
-  left:42%;bottom:0;
+  left:42%;bottom:4vh;
   width:min(56vw,60vh,640px);
   aspect-ratio:1;
   transform:translateX(-50%);
   filter:drop-shadow(0 16px 30px rgba(0,0,0,.7));
-  animation:lsShipDrift 5s ease-in-out infinite alternate;
+  animation:lsShipFigureEight 7.5s linear infinite;
+  animation-play-state:paused;
 }
-@keyframes lsShipDrift{
-  0%{transform:translateX(-50%) translateY(0) rotate(-.55deg)}
-  100%{transform:translateX(-50%) translateY(-5px) rotate(.55deg)}
+body.is-warp-lightspeed .ls-ship{animation-play-state:running}
+@keyframes lsShipFigureEight{
+  0%,100%{transform:translateX(-50%) translateY(0) rotate(0)}
+  12.5%{transform:translateX(calc(-50% + 8vw)) translateY(-2.5vh) rotate(2.4deg)}
+  25%{transform:translateX(calc(-50% + 12vw)) translateY(0) rotate(3.2deg)}
+  37.5%{transform:translateX(calc(-50% + 8vw)) translateY(2.5vh) rotate(1.4deg)}
+  50%{transform:translateX(-50%) translateY(0) rotate(0)}
+  62.5%{transform:translateX(calc(-50% - 8vw)) translateY(-2.5vh) rotate(-2.4deg)}
+  75%{transform:translateX(calc(-50% - 12vw)) translateY(0) rotate(-3.2deg)}
+  87.5%{transform:translateX(calc(-50% - 8vw)) translateY(2.5vh) rotate(-1.4deg)}
 }
 .ls-ship img{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;display:block}
 .ls-engine-glow{
