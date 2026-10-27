@@ -1813,7 +1813,7 @@ body.is-briefing .mobile-menu-btn,body.is-destination-map .mobile-menu-btn{visib
     <div class="briefing-location" id="briefingLocation"></div>
     <div class="briefing-rule"></div>
   </div>
-  <button class="brief-launch" id="launchSelected" type="button">Launch</button>
+  <button class="brief-launch" id="launchSelected" type="button" aria-live="polite">Launch</button>
 </section>
 
 <!-- prompt bar -->
@@ -2126,6 +2126,7 @@ document.addEventListener('click',e=>{
 towerMenu.querySelectorAll('.tower-links a').forEach(link=>link.addEventListener('click',()=>{towerMenu.open=false}));
 
 function showOrbit(){
+  cancelLaunchCountdown();
   towerMenu.open = false;
   body.classList.add('is-orbit');
   body.classList.remove('is-destination-map','is-briefing');
@@ -2134,6 +2135,7 @@ function showOrbit(){
   document.querySelector('.planet.is-active')?.classList.remove('spin');
 }
 function showDestinationMap(){
+  cancelLaunchCountdown();
   body.classList.remove('is-orbit');
   body.classList.remove('is-briefing');
   body.classList.add('is-destination-map');
@@ -2143,6 +2145,7 @@ function showDestinationMap(){
   rows[mapFocus]?.focus();
 }
 function selectDestination(i){
+  cancelLaunchCountdown();
   towerMenu.open = false;
   pendingDest = i;
   body.classList.remove('is-destination-map');
@@ -2154,7 +2157,63 @@ function selectDestination(i){
 }
 document.getElementById('destBtn').addEventListener('click', showDestinationMap);
 document.getElementById('backBtn').addEventListener('click', showOrbit);
-document.getElementById('launchSelected').addEventListener('click',()=>{if(pendingDest>=0) launch(pendingDest)});
+const launchButton = document.getElementById('launchSelected');
+let launchCountdownTimer = null;
+let launchClickContext = null;
+function cancelLaunchCountdown(){
+  if(launchCountdownTimer === null) return;
+  clearTimeout(launchCountdownTimer);
+  launchCountdownTimer = null;
+  launchButton.disabled = false;
+  launchButton.textContent = 'Launch';
+}
+function playMetallicLaunchClick(){
+  if(volPct === 0) return;
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if(!AudioContextClass) return;
+  try{
+    launchClickContext ||= new AudioContextClass();
+    if(launchClickContext.state === 'suspended') launchClickContext.resume();
+    const now = launchClickContext.currentTime;
+    const level = (volPct / 100) * VOL_CAP * .22;
+    [[1850,1],[2780,.42]].forEach(([frequency,amplitude])=>{
+      const tone = launchClickContext.createOscillator();
+      const envelope = launchClickContext.createGain();
+      tone.type = 'triangle';
+      tone.frequency.setValueAtTime(frequency,now);
+      tone.frequency.exponentialRampToValueAtTime(frequency * .72,now + .09);
+      envelope.gain.setValueAtTime(.0001,now);
+      envelope.gain.exponentialRampToValueAtTime(level * amplitude,now + .004);
+      envelope.gain.exponentialRampToValueAtTime(.0001,now + .12);
+      tone.connect(envelope);
+      envelope.connect(launchClickContext.destination);
+      tone.start(now);
+      tone.stop(now + .13);
+    });
+  }catch{}
+}
+function startLaunchCountdown(){
+  if(pendingDest < 0 || launchCountdownTimer !== null) return;
+  launchButton.disabled = true;
+  let count = 3;
+  const tick = ()=>{
+    launchButton.textContent = String(count);
+    playMetallicLaunchClick();
+    if(count === 1){
+      launchCountdownTimer = setTimeout(()=>{
+        launchCountdownTimer = null;
+        launchButton.textContent = 'Launch';
+        launchButton.disabled = false;
+        if(pendingDest >= 0) launch(pendingDest);
+      },1000);
+    }else{
+      count -= 1;
+      launchCountdownTimer = setTimeout(tick,1000);
+    }
+  };
+  tick();
+}
+launchButton.addEventListener('click',startLaunchCountdown);
 
 /* planet preview on hover */
 const planets = document.querySelectorAll('.planet');
@@ -2428,6 +2487,7 @@ function setMenuExpanded(expanded){
   playerCard.setAttribute('aria-expanded',String(expanded));
 }
 function openGuardianMenu(){
+  cancelLaunchCountdown();
   if(isGuardianMenuOpen()) return;
   menuOpener = document.activeElement;
   guardianMenu.classList.add('is-open');
