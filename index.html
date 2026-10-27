@@ -476,24 +476,30 @@ body.is-warp-lightspeed .lightspeed{opacity:1}
 }
 
 .ls-ship{
-  position:absolute;
-  left:50%;bottom:18%;
-  width:520px;height:280px;
-  margin-left:-260px;
+  position:absolute;z-index:1;
+  left:48%;bottom:0;
+  width:min(56vw,60vh,640px);
+  aspect-ratio:1;
+  transform:translateX(-50%);
   filter:drop-shadow(0 16px 30px rgba(0,0,0,.7));
 }
-.ls-ship svg{width:100%;height:100%;display:block;overflow:visible}
-.ls-engine-pulse{
+.ls-ship img{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;display:block}
+.ls-engine-glow{
+  position:absolute;z-index:0;width:19%;height:15%;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(245,255,255,.98) 0%,rgba(150,237,255,.9) 18%,rgba(91,200,216,.74) 43%,rgba(55,158,196,.26) 70%,transparent 100%);
+  filter:blur(5px);
   animation:lsEnginePulse 1s ease-in-out infinite alternate;
-  transform-origin:center;
+  transform:translate(-50%,-50%);
 }
-.ls-burst,.ls-streak,.ls-engine-pulse{animation-play-state:paused}
+.ls-engine-glow-a{left:18%;top:54%}
+.ls-engine-glow-b{left:75%;top:75%}
+.ls-burst,.ls-streak,.ls-engine-glow{animation-play-state:paused}
 body.is-warp-lightspeed .ls-burst,
 body.is-warp-lightspeed .ls-streak,
-body.is-warp-lightspeed .ls-engine-pulse{animation-play-state:running}
+body.is-warp-lightspeed .ls-engine-glow{animation-play-state:running}
 @keyframes lsEnginePulse{
-  0%{opacity:.55;transform:scale(.92)}
-  100%{opacity:1;transform:scale(1.08)}
+  0%{opacity:.55;transform:translate(-50%,-50%) scale(.92)}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}
 }
 
 /* Lightspeed performance budget — pause animations of occluded
@@ -1695,66 +1701,10 @@ body.is-briefing .mobile-menu-btn,body.is-destination-map .mobile-menu-btn{visib
   <div class="ls-bg"></div>
   <div class="ls-burst"></div>
   <div class="ls-streaks" id="lsStreaks"></div>
-  <div class="ls-ship">
-    <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="lsArmor" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0" stop-color="#d4d2cc"/>
-          <stop offset=".55" stop-color="#777d89"/>
-          <stop offset="1" stop-color="#242a34"/>
-        </linearGradient>
-        <linearGradient id="lsGold" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0" stop-color="#e8c890"/>
-          <stop offset="1" stop-color="#7e6a44"/>
-        </linearGradient>
-        <radialGradient id="lsEngineG">
-          <stop offset="0" stop-color="#ffffff"/>
-          <stop offset=".35" stop-color="#dff5fc"/>
-          <stop offset=".7" stop-color="#5bc8d8"/>
-          <stop offset="1" stop-color="#12303b"/>
-        </radialGradient>
-        <filter id="lsBlur"><feGaussianBlur stdDeviation="8"/></filter>
-        <filter id="lsBlurSm"><feGaussianBlur stdDeviation="4"/></filter>
-      </defs>
-
-      <g class="ls-engine-glow" filter="url(#lsBlur)" opacity=".95">
-        <ellipse cx="150" cy="220" rx="58" ry="24" fill="#5bc8d8"/>
-        <ellipse cx="450" cy="220" rx="58" ry="24" fill="#5bc8d8"/>
-      </g>
-
-      <!-- Aft silhouette echoes the broad twin nacelles from orbit -->
-      <path d="M104 215 45 250 145 172 225 180 250 220 215 260Z"
-            fill="#252b35" stroke="#111722" stroke-width="5"/>
-      <path d="M496 215 555 250 455 172 375 180 350 220 385 260Z"
-            fill="#252b35" stroke="#111722" stroke-width="5"/>
-      <path d="M180 178 250 145 350 145 420 178 484 236 392 257 208 257 116 236Z"
-            fill="url(#lsArmor)" stroke="#111722" stroke-width="6" stroke-linejoin="round"/>
-      <path d="m250 148 100 0 21 28-142 0Z" fill="#464d59"/>
-      <path d="m290 150 20 0 13 95-23 12-23-12Z" fill="url(#lsGold)" opacity=".85"/>
-      <path d="m205 190-38 42 62 12M395 190l38 42-62 12"
-            fill="none" stroke="#a4a8b4" stroke-width="6"/>
-      <path d="m265 184-14 65M335 184l14 65"
-            fill="none" stroke="#222832" stroke-width="5"/>
-
-      <!-- Twin engine housings and hot cores -->
-      <g fill="#131923" stroke="#727986" stroke-width="5">
-        <ellipse cx="150" cy="220" rx="42" ry="27"/>
-        <ellipse cx="450" cy="220" rx="42" ry="27"/>
-      </g>
-      <g fill="url(#lsEngineG)">
-        <ellipse cx="150" cy="220" rx="34" ry="21"/>
-        <ellipse cx="450" cy="220" rx="34" ry="21"/>
-      </g>
-      <g fill="#ffffff">
-        <ellipse cx="150" cy="220" rx="14" ry="8"/>
-        <ellipse cx="450" cy="220" rx="14" ry="8"/>
-      </g>
-
-      <g class="ls-engine-pulse" filter="url(#lsBlurSm)" opacity=".7">
-        <ellipse cx="150" cy="220" rx="46" ry="30" fill="#dff5fc"/>
-        <ellipse cx="450" cy="220" rx="46" ry="30" fill="#dff5fc"/>
-      </g>
-    </svg>
+  <div class="ls-ship" aria-hidden="true">
+    <i class="ls-engine-glow ls-engine-glow-a"></i>
+    <i class="ls-engine-glow ls-engine-glow-b"></i>
+    <img src="media/destiny-jumpship-lightspeed.svg" alt="" />
   </div>
 </div>
 
