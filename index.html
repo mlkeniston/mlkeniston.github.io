@@ -815,17 +815,16 @@ body.is-warp-settling .prompts{opacity:0;visibility:hidden;pointer-events:none}
 }
 body.is-destination-map .prompts{opacity:0;pointer-events:none}
 body.is-briefing .prompts{opacity:0;visibility:hidden;pointer-events:none}
-.prompt{display:flex;align-items:center;gap:8px}
-.kbd{
-  border:1px solid var(--gold-dim);color:var(--gold);
-  padding:3px 8px;font-size:9px;
-  background:rgba(2,4,12,.55);
-  letter-spacing:.18em;
+body.is-guardian-menu-open .prompts{opacity:0;visibility:hidden;pointer-events:none}
+.orbit-menu-btn{
+  min-height:44px;padding:0 16px;border:1px solid rgba(201,169,110,.72);
+  background:rgba(2,4,12,.78);color:var(--gold);
+  font-family:var(--display);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+  cursor:pointer;transition:color .25s ease,background .25s ease,border-color .25s ease;
 }
-.kbd.tri{
-  width:18px;height:18px;padding:0;display:grid;place-items:center;
-  border-radius:50%;
-}
+.orbit-menu-btn:hover{color:var(--white);background:rgba(201,169,110,.16);border-color:var(--gold)}
+.orbit-menu-btn:focus-visible{outline:2px solid var(--white);outline-offset:3px}
+body.is-guardian-menu-open .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:none}
 
 /* ═══════════════════════════════════════════════════════
    CENTER TITLE — visible in menu only
@@ -1383,13 +1382,13 @@ body.is-destination-map .back-btn{color:var(--gold)}
   font-family:var(--mono);font-size:10px;letter-spacing:.3em;
   color:var(--gm-bone-dim);text-transform:uppercase;
 }
-.gm-foot-key{
-  border:1px solid var(--gold-dim);color:var(--gold);
-  padding:3px 8px;font-size:9px;
-  background:rgba(0,0,0,.32);
+.gm-dismiss{
+  display:flex;align-items:center;justify-content:center;min-height:44px;gap:10px;
+  padding:0 16px;border:1px solid var(--gold-dim);background:rgba(0,0,0,.22);
+  color:var(--gold);font:inherit;text-transform:inherit;cursor:pointer;
+  transition:color .2s ease,background .2s ease,border-color .2s ease;
 }
-.gm-dismiss{display:flex;align-items:center;gap:10px;padding:4px 0;border:0;background:transparent;color:inherit;font:inherit;text-transform:inherit;cursor:none}
-.gm-dismiss:hover{color:var(--gm-bone-strong)}
+.gm-dismiss:hover{color:var(--gm-bone-strong);background:rgba(201,169,110,.12);border-color:var(--gold)}
 .gm-dismiss:focus-visible{outline:2px solid var(--white);outline-offset:4px}
 
 /* Firefox compatibility screen */
@@ -1480,9 +1479,12 @@ body.is-guardian-menu-open .planet.is-active{animation-play-state:paused}
 }
 .cursor.is-hot::before{transform:scale(1.4);border-color:var(--teal)}
 .cursor.is-hot::after{background:var(--teal)}
-.mobile-menu-btn{position:fixed;top:max(16px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));z-index:14;display:none;min-width:48px;min-height:48px;align-items:center;justify-content:center;padding:0 14px;border:1px solid rgba(201,169,110,.7);background:rgba(2,4,12,.78);color:var(--white);font-family:var(--display);font-size:12px;letter-spacing:.2em;text-transform:uppercase;backdrop-filter:blur(6px);touch-action:manipulation}
+.mobile-menu-btn{position:fixed;top:auto;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));z-index:14;display:none;min-width:48px;min-height:48px;align-items:center;justify-content:center;padding:0 14px;border:1px solid rgba(201,169,110,.7);background:rgba(2,4,12,.78);color:var(--gold);font-family:var(--display);font-size:12px;letter-spacing:.16em;text-transform:uppercase;backdrop-filter:blur(6px);touch-action:manipulation}
 .mobile-menu-btn:focus-visible{outline:2px solid var(--white);outline-offset:3px}
-body.is-briefing .mobile-menu-btn,body.is-destination-map .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:none}
+body.is-briefing .mobile-menu-btn,body.is-destination-map .mobile-menu-btn,
+body.is-warp-bright .mobile-menu-btn,body.is-warp-out-flying .mobile-menu-btn,
+body.is-warp-lightspeed .mobile-menu-btn,body.is-warp-in-flying .mobile-menu-btn,
+body.is-warp-settling .mobile-menu-btn{visibility:hidden;opacity:0;pointer-events:none}
 .player-card:focus-visible{outline:2px solid var(--white);outline-offset:4px}
 .gm-tab:focus-visible,.gm-link:focus-visible,.dest-btn:focus-visible,.back-btn:focus-visible,.audio-btn:focus-visible{outline:2px solid var(--white);outline-offset:3px}
 
@@ -1544,7 +1546,6 @@ body.is-briefing .mobile-menu-btn,body.is-destination-map .mobile-menu-btn{visib
   .gm-tab{min-height:44px;padding:0 14px;font-size:13px;letter-spacing:.12em}
   .gm-footer{padding:8px max(16px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));font-size:10px;letter-spacing:.12em}
   .gm-dismiss{min-height:44px;font-size:11px}
-  .gm-foot-key{font-size:10px}
   .back-btn{min-height:48px;padding:0 11px;font-size:10px;letter-spacing:.1em;gap:7px}
 }
 @media (max-width:520px){
@@ -1775,7 +1776,7 @@ body.is-briefing .mobile-menu-btn,body.is-destination-map .mobile-menu-btn{visib
   <div class="pc-tag">PORTFOLIO BUILD</div>
 </div>
 
-<button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Open portfolio menu" aria-haspopup="dialog" aria-controls="guardianMenu" aria-expanded="false">MENU</button>
+<button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Open portfolio menu" aria-haspopup="dialog" aria-controls="guardianMenu" aria-expanded="false">OPEN MENU</button>
 
 <!-- SET DESTINATION button (orbit) -->
 <button class="dest-btn" id="destBtn">
@@ -1795,7 +1796,7 @@ body.is-briefing .mobile-menu-btn,body.is-destination-map .mobile-menu-btn{visib
 
 <!-- prompt bar -->
 <div class="prompts">
-  <div class="prompt"><span class="kbd">ESC</span><span>Menu</span></div>
+  <button class="orbit-menu-btn" id="orbitMenuBtn" type="button" aria-label="Open portfolio menu" aria-haspopup="dialog" aria-controls="guardianMenu" aria-expanded="false">OPEN MENU</button>
 </div>
 
 <!-- DESTINATION PANEL -->
@@ -1970,9 +1971,8 @@ body.is-briefing .mobile-menu-btn,body.is-destination-map .mobile-menu-btn{visib
 
   <div class="gm-footer">
     <span>GUARDIAN ORBIT // PORTFOLIO BUILD</span>
-    <button class="gm-dismiss" id="gmDismissBtn" type="button" aria-label="Dismiss portfolio menu">
-      <span class="gm-foot-key">ESC</span>
-      <span>Dismiss</span>
+    <button class="gm-dismiss" id="gmDismissBtn" type="button" aria-label="Close portfolio menu">
+      <span>CLOSE MENU</span>
     </button>
   </div>
 </div>
@@ -2412,11 +2412,13 @@ const guardianMenu = document.getElementById('guardianMenu');
 const gmTabs = document.querySelectorAll('.gm-tab');
 const gmPages = document.querySelectorAll('.gm-page');
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const orbitMenuBtn = document.getElementById('orbitMenuBtn');
 const playerCard = document.querySelector('.player-card');
 let menuOpener = null;
 
 function setMenuExpanded(expanded){
   mobileMenuBtn.setAttribute('aria-expanded',String(expanded));
+  orbitMenuBtn.setAttribute('aria-expanded',String(expanded));
   playerCard.setAttribute('aria-expanded',String(expanded));
 }
 function openGuardianMenu(){
@@ -2465,6 +2467,7 @@ playerCard.addEventListener('keydown',e=>{
   if(e.key==='Enter'||e.key===' '){e.preventDefault();openGuardianMenu()}
 });
 mobileMenuBtn.addEventListener('click',openGuardianMenu);
+orbitMenuBtn.addEventListener('click',openGuardianMenu);
 document.getElementById('gmDismissBtn').addEventListener('click',closeGuardianMenu);
 
 /* custom cursor */
