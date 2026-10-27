@@ -6,7 +6,6 @@
 <title>Guardian Orbit</title>
 <script>
 if (/(?:Firefox|FxiOS)\//i.test(navigator.userAgent)) document.documentElement.classList.add('firefox-compat');
-if (/Safari\//i.test(navigator.userAgent) && !/(?:Chrome|Chromium|CriOS|Edg|OPR)\//i.test(navigator.userAgent)) document.documentElement.classList.add('safari-parallax');
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,7 +48,6 @@ body{
 .space{
   position:fixed;inset:-12px;
   translate:var(--orbit-pointer-x,0px) var(--orbit-pointer-y,0px);
-  transition:translate .3s cubic-bezier(.22,.61,.36,1);
   background:
     radial-gradient(ellipse 80% 60% at 20% 20%, #0a1830 0%, transparent 60%),
     radial-gradient(ellipse 60% 40% at 80% 90%, #0a1428 0%, transparent 60%),
@@ -185,7 +183,7 @@ body{
   position:absolute;left:18%;top:12%;width:0;height:0;
   translate:var(--orbit-pointer-x,0px) var(--orbit-pointer-y,0px);
   pointer-events:none;opacity:0;
-  transition:translate .3s cubic-bezier(.22,.61,.36,1),opacity 1.2s ease;
+  transition:opacity 1.2s ease;
 }
 body.is-orbit .sun{opacity:1}
 .sun-core{
@@ -236,7 +234,6 @@ body.is-orbit .sun{opacity:1}
     margin-left 1.4s cubic-bezier(.7,0,.2,1),
     left 1.4s cubic-bezier(.7,0,.2,1),
     transform 1.4s cubic-bezier(.7,0,.2,1),
-    translate .3s cubic-bezier(.22,.61,.36,1),
     opacity 1.4s ease;
 }
 body.is-destination-map .planet-stage{opacity:0;pointer-events:none}
@@ -383,7 +380,6 @@ body.is-destination-map .ship-stage{opacity:0}
   pointer-events:none;
   z-index:5;
   transform:translateX(0);
-  transition:translate .3s cubic-bezier(.22,.61,.36,1);
 }
 body.is-warp-out-flying .ship-warp-wrapper{
   animation:warpFlyOut 1s cubic-bezier(.5,0,.5,1) forwards;
@@ -803,7 +799,7 @@ body.is-orbit .dest-btn{opacity:1;pointer-events:auto}
   translate:var(--orbit-pointer-x,0px) var(--orbit-pointer-y,0px);
   z-index:16;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
   opacity:0;pointer-events:none;transform:translateY(10px);
-  transition:translate .3s cubic-bezier(.22,.61,.36,1),opacity .45s ease,transform .45s cubic-bezier(.2,.7,.2,1);
+  transition:opacity .45s ease,transform .45s cubic-bezier(.2,.7,.2,1);
 }
 body.is-briefing .destination-briefing{opacity:1;pointer-events:auto;transform:translateY(0)}
 body.is-briefing .dest-btn{opacity:0;pointer-events:none}
@@ -891,17 +887,9 @@ body.is-destination-map .hud{visibility:hidden;pointer-events:none}
   z-index:20;
   opacity:0;pointer-events:none;visibility:hidden;
   transform:translateY(8px);
-  transition:translate .3s cubic-bezier(.22,.61,.36,1),transform .55s cubic-bezier(.2,.7,.2,1), opacity .45s ease, visibility .45s;
+  transition:transform .55s cubic-bezier(.2,.7,.2,1), opacity .45s ease, visibility .45s;
 }
 body.is-destination-map .dest-panel{transform:translateY(0);opacity:1;visibility:visible;pointer-events:auto}
-
-html.safari-parallax .space,html.safari-parallax .ship-warp-wrapper{transition:none}
-html.safari-parallax .sun{transition:opacity 1.2s ease}
-html.safari-parallax .planet-stage{
-  transition:bottom 1.4s cubic-bezier(.7,0,.2,1),width 1.4s cubic-bezier(.7,0,.2,1),height 1.4s cubic-bezier(.7,0,.2,1),margin-left 1.4s cubic-bezier(.7,0,.2,1),left 1.4s cubic-bezier(.7,0,.2,1),transform 1.4s cubic-bezier(.7,0,.2,1),opacity 1.4s ease;
-}
-html.safari-parallax .destination-briefing{transition:opacity .45s ease,transform .45s cubic-bezier(.2,.7,.2,1)}
-html.safari-parallax .dest-panel{transition:transform .55s cubic-bezier(.2,.7,.2,1),opacity .45s ease,visibility .45s}
 
 .bracket{position:absolute;width:18px;height:18px;border:1px solid var(--gold)}
 .bk-tl{top:-1px;left:-1px;border-right:none;border-bottom:none}
@@ -2136,26 +2124,14 @@ const towerTrigger = towerMenu.querySelector('.tower-trigger');
 const destinationPanel = document.getElementById('destPanel');
 const orbitParallaxTargets = document.querySelectorAll('.space,.sun,#planetStage,.ship-warp-wrapper,#destinationBriefing');
 const warpClasses = ['is-warp-bright','is-warp-out-flying','is-warp-lightspeed','is-warp-in-flying','is-warp-settling'];
-const useFrameParallax = document.documentElement.classList.contains('safari-parallax');
 const parallax = {
-  orbit:{x:0,y:0,targetX:0,targetY:0,appliedX:null,appliedY:null},
-  destination:{x:0,y:0,targetX:0,targetY:0,appliedX:null,appliedY:null}
+  orbit:{x:0,y:0,targetX:0,targetY:0},
+  destination:{x:0,y:0,targetX:0,targetY:0}
 };
 let parallaxFrame = 0;
 let parallaxLastTime = 0;
-function renderParallax(key,state){
-  if(state.appliedX === state.x && state.appliedY === state.y) return;
-  const targets = key === 'orbit' ? orbitParallaxTargets : [destinationPanel];
-  const prefix = key === 'orbit' ? 'orbit' : 'dest';
-  targets.forEach(el=>{
-    el.style.setProperty(`--${prefix}-pointer-x`,`${state.x.toFixed(2)}px`);
-    el.style.setProperty(`--${prefix}-pointer-y`,`${state.y.toFixed(2)}px`);
-  });
-  state.appliedX = state.x;
-  state.appliedY = state.y;
-}
 function scheduleParallax(){
-  if(useFrameParallax && !parallaxFrame) parallaxFrame = requestAnimationFrame(animateParallax);
+  if(!parallaxFrame) parallaxFrame = requestAnimationFrame(animateParallax);
 }
 function animateParallax(time){
   const dt = Math.min(time - (parallaxLastTime || time), 64);
@@ -2164,24 +2140,26 @@ function animateParallax(time){
   let moving = false;
   for(const key of ['orbit','destination']){
     const state = parallax[key];
-    const oldX = state.x, oldY = state.y;
     state.x += (state.targetX - state.x) * blend;
     state.y += (state.targetY - state.y) * blend;
     if(Math.abs(state.targetX-state.x) < .02 && Math.abs(state.targetY-state.y) < .02){
       state.x = state.targetX;
       state.y = state.targetY;
     }else moving = true;
-    if(state.x !== oldX || state.y !== oldY) renderParallax(key,state);
+    const targets = key === 'orbit' ? orbitParallaxTargets : [destinationPanel];
+    const prefix = key === 'orbit' ? 'orbit' : 'dest';
+    targets.forEach(el=>{
+      el.style.setProperty(`--${prefix}-pointer-x`,`${state.x.toFixed(2)}px`);
+      el.style.setProperty(`--${prefix}-pointer-y`,`${state.y.toFixed(2)}px`);
+    });
   }
   if(moving) parallaxFrame = requestAnimationFrame(animateParallax);
   else {parallaxFrame = 0;parallaxLastTime = 0;}
 }
 function setParallaxTarget(key,x=0,y=0){
-  const state = parallax[key];
-  state.targetX = x;
-  state.targetY = y;
-  if(useFrameParallax) scheduleParallax();
-  else {state.x = x;state.y = y;renderParallax(key,state)}
+  parallax[key].targetX = x;
+  parallax[key].targetY = y;
+  scheduleParallax();
 }
 function resetDestinationParallax(){
   setParallaxTarget('destination');
