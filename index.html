@@ -2102,42 +2102,61 @@ const towerMenu = document.querySelector('.tower-marker');
 const destinationPanel = document.getElementById('destPanel');
 const orbitParallaxTargets = document.querySelectorAll('.space,.sun,#planetStage,.ship-warp-wrapper,#destinationBriefing');
 const warpClasses = ['is-warp-bright','is-warp-out-flying','is-warp-lightspeed','is-warp-in-flying','is-warp-settling'];
+const cursor = document.getElementById('cursor');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let cx=0, cy=0, tx=0, ty=0;
 const parallax = {
-  orbit:{x:0,y:0,targetX:0,targetY:0},
-  destination:{x:0,y:0,targetX:0,targetY:0}
+  orbit:{x:0,y:0,targetX:0,targetY:0,appliedX:null,appliedY:null},
+  destination:{x:0,y:0,targetX:0,targetY:0,appliedX:null,appliedY:null}
 };
-let parallaxFrame = 0;
-let parallaxLastTime = 0;
-function scheduleParallax(){
-  if(!parallaxFrame) parallaxFrame = requestAnimationFrame(animateParallax);
+let pointerFrame = 0;
+let pointerLastTime = 0;
+function schedulePointerFrame(){
+  if(!pointerFrame) pointerFrame = requestAnimationFrame(animatePointerFrame);
 }
-function animateParallax(time){
-  const dt = Math.min(time - (parallaxLastTime || time), 64);
-  parallaxLastTime = time;
+function renderParallax(key,state){
+  const x = `${state.x.toFixed(2)}px`, y = `${state.y.toFixed(2)}px`;
+  if(state.appliedX === x && state.appliedY === y) return;
+  const targets = key === 'orbit' ? orbitParallaxTargets : [destinationPanel];
+  const prefix = key === 'orbit' ? 'orbit' : 'dest';
+  targets.forEach(el=>{
+    el.style.setProperty(`--${prefix}-pointer-x`,x);
+    el.style.setProperty(`--${prefix}-pointer-y`,y);
+  });
+  state.appliedX = x;
+  state.appliedY = y;
+}
+function animatePointerFrame(time){
+  pointerFrame = 0;
+  const dt = Math.min(time - (pointerLastTime || time), 64);
+  pointerLastTime = time;
   const blend = 1 - Math.exp(-dt / 115);
   let moving = false;
   for(const key of ['orbit','destination']){
     const state = parallax[key];
+    const oldX = state.x, oldY = state.y;
     state.x += (state.targetX - state.x) * blend;
     state.y += (state.targetY - state.y) * blend;
     if(Math.abs(state.targetX-state.x) < .02 && Math.abs(state.targetY-state.y) < .02){
       state.x = state.targetX;
       state.y = state.targetY;
     }else moving = true;
-    const targets = key === 'orbit' ? orbitParallaxTargets : [destinationPanel];
-    const prefix = key === 'orbit' ? 'orbit' : 'dest';
-    targets.forEach(el=>{
-      el.style.setProperty(`--${prefix}-pointer-x`,`${state.x.toFixed(2)}px`);
-      el.style.setProperty(`--${prefix}-pointer-y`,`${state.y.toFixed(2)}px`);
-    });
+    if(state.x !== oldX || state.y !== oldY) renderParallax(key,state);
   }
-  if(moving) parallaxFrame = requestAnimationFrame(animateParallax);
-  else {parallaxFrame = 0;parallaxLastTime = 0;}
+  if(!reduceMotion){
+    cx += (tx-cx)*.22; cy += (ty-cy)*.22;
+    cursor.style.transform = `translate(${cx}px,${cy}px) translate(-50%,-50%)`;
+    if(Math.abs(tx-cx)>.1 || Math.abs(ty-cy)>.1) moving = true;
+  }
+  if(moving) schedulePointerFrame();
+  else pointerLastTime = 0;
 }
 function setParallaxTarget(key,x=0,y=0){
-  parallax[key].targetX = x;
-  parallax[key].targetY = y;
-  scheduleParallax();
+  const state = parallax[key];
+  if(state.targetX === x && state.targetY === y) return;
+  state.targetX = x;
+  state.targetY = y;
+  schedulePointerFrame();
 }
 function resetDestinationParallax(){
   setParallaxTarget('destination');
@@ -2146,6 +2165,10 @@ function resetOrbitParallax(){
   setParallaxTarget('orbit');
 }
 window.addEventListener('pointermove',e=>{
+  if(e.pointerType === 'mouse'){
+    tx=e.clientX; ty=e.clientY;
+    if(!reduceMotion) schedulePointerFrame();
+  }
   if(e.pointerType !== 'mouse' || body.classList.contains('is-guardian-menu-open')){
     resetDestinationParallax();resetOrbitParallax();return;
   }
@@ -2548,14 +2571,6 @@ orbitMenuBtn.addEventListener('click',openGuardianMenu);
 document.getElementById('gmDismissBtn').addEventListener('click',closeGuardianMenu);
 
 /* custom cursor */
-const cursor = document.getElementById('cursor');
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-let cx=0, cy=0, tx=0, ty=0;
-let cursorFrame = null;
-window.addEventListener('mousemove', e=>{
-  tx=e.clientX; ty=e.clientY;
-  if(!reduceMotion && cursorFrame === null) cursorFrame=requestAnimationFrame(tick);
-});
 // Block pinch at gesture start and re-lock the viewport when Safari restores this page.
 const viewportMeta = document.querySelector('meta[name="viewport"]');
 const lockedViewport = 'width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no';
@@ -2579,12 +2594,6 @@ document.addEventListener('gesturestart',e=>e.preventDefault(),{passive:false});
 document.addEventListener('gesturechange',e=>e.preventDefault(),{passive:false});
 window.addEventListener('pageshow',restoreMobileViewport);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)restoreMobileViewport()});
-function tick(){
-  cursorFrame = null;
-  cx += (tx-cx)*.22; cy += (ty-cy)*.22;
-  cursor.style.transform = `translate(${cx}px,${cy}px) translate(-50%,-50%)`;
-  if(Math.abs(tx-cx)>.1 || Math.abs(ty-cy)>.1) cursorFrame=requestAnimationFrame(tick);
-}
 function wireHot(sel){
   document.querySelectorAll(sel).forEach(el=>{
     el.addEventListener('mouseenter', ()=>cursor.classList.add('is-hot'));
