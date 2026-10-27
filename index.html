@@ -4,6 +4,9 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
 <title>Guardian Orbit</title>
+<script>
+if (/(?:Firefox|FxiOS)\//i.test(navigator.userAgent)) document.documentElement.classList.add('firefox-compat');
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -1346,6 +1349,30 @@ body.is-destination-map .back-btn{color:var(--gold)}
 .gm-dismiss:hover{color:var(--gm-bone-strong)}
 .gm-dismiss:focus-visible{outline:2px solid var(--white);outline-offset:4px}
 
+/* Firefox compatibility screen */
+.firefox-notice{display:none}
+html.firefox-compat,html.firefox-compat body{height:auto!important;min-height:100%;overflow:auto!important}
+html.firefox-compat body{cursor:auto;user-select:text;-webkit-font-smoothing:auto}
+html.firefox-compat body>*:not(.firefox-notice){display:none!important}
+html.firefox-compat #firefoxNotice{display:grid!important;visibility:visible!important}
+html.firefox-compat .firefox-notice{
+  display:grid;min-height:100vh;min-height:100dvh;place-items:center;
+  padding:clamp(20px,5vw,64px);
+  background:radial-gradient(ellipse at 20% 10%,#14243a 0%,transparent 58%),#03060d;
+  color:var(--white);font-family:Arial,Helvetica,sans-serif;letter-spacing:normal;
+}
+.firefox-card{width:min(100%,760px);padding:clamp(24px,5vw,56px);border:1px solid rgba(201,169,110,.48);background:rgba(2,4,12,.94);box-shadow:0 18px 70px rgba(0,0,0,.38)}
+.firefox-kicker{font:600 12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}
+.firefox-card h1{margin-top:18px;font-size:clamp(30px,6vw,52px);line-height:1.08;font-weight:500;letter-spacing:.02em}
+.firefox-message{max-width:58ch;margin-top:18px;color:#c8d0dc;font-size:17px;line-height:1.65}
+.firefox-recommendation{margin-top:24px;padding:14px 16px;border-left:2px solid var(--teal);background:rgba(91,200,216,.08);color:#e5f1f5;font-size:15px;line-height:1.55}
+.firefox-links-title{margin-top:32px;color:#aeb8c8;font:600 11px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase}
+.firefox-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:10px;margin-top:12px}
+.firefox-links a{display:flex;align-items:center;min-height:48px;padding:10px 12px;border:1px solid rgba(201,169,110,.28);color:#f0d5a3;text-decoration:none;font-size:15px}
+.firefox-links a:hover,.firefox-links a:focus-visible{border-color:var(--gold);background:rgba(201,169,110,.1);outline:2px solid transparent}
+.firefox-contact{margin-top:24px;color:#aeb8c8;font-size:14px;line-height:1.6}
+.firefox-contact a{color:#8ee0ed}
+
 /* Make player card clickable */
 .player-card{pointer-events:auto;cursor:none}
 .pc-tile{transition:filter .25s ease}
@@ -1595,6 +1622,28 @@ body.is-briefing .mobile-menu-btn,body.is-destination-map .mobile-menu-btn{visib
 </style>
 </head>
 <body class="is-orbit">
+
+<main class="firefox-notice" id="firefoxNotice" aria-labelledby="firefoxTitle">
+  <section class="firefox-card">
+    <div class="firefox-kicker">Browser compatibility</div>
+    <h1 id="firefoxTitle">This interactive site is currently unusable in Firefox.</h1>
+    <p class="firefox-message">The orbit experience is not performing well in Firefox right now. Please open this portfolio in Safari to view the full experience.</p>
+    <div class="firefox-recommendation">You can still reach Malcolm’s projects and profiles from the links below.</div>
+    <h2 class="firefox-links-title">Projects</h2>
+    <nav class="firefox-links" aria-label="Project links">
+      <a href="https://shonenshowdown.dev" target="_blank" rel="noopener noreferrer">Shonen Showdown website</a>
+      <a href="https://github.com/Roblox-Dev-Club" target="_blank" rel="noopener noreferrer">Roblox Dev Club on GitHub</a>
+      <a href="https://github.com/mlkeniston/CareerOS" target="_blank" rel="noopener noreferrer">CareerOS on GitHub</a>
+    </nav>
+    <h2 class="firefox-links-title">Profiles</h2>
+    <nav class="firefox-links" aria-label="Profile links">
+      <a href="https://github.com/mlkeniston" target="_blank" rel="noopener noreferrer">Personal GitHub</a>
+      <a href="https://www.linkedin.com/in/malcolm-keniston/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a href="mailto:mlkkeniston@gmail.com">Email Malcolm</a>
+    </nav>
+    <p class="firefox-contact">Firefox support is being investigated.</p>
+  </section>
+</main>
 
 <div class="rotate-prompt" id="rotatePrompt" role="alert" aria-live="assertive">
   <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
@@ -2021,6 +2070,7 @@ body.is-briefing .mobile-menu-btn,body.is-destination-map .mobile-menu-btn{visib
 <div class="cursor" id="cursor"></div>
 
 <script>
+if (!document.documentElement.classList.contains('firefox-compat')) {
 /* ═══════════════════════════════════════════════════════
    DESTINATIONS — edit these to point at your projects.
    ═══════════════════════════════════════════════════════ */
@@ -2576,6 +2626,7 @@ function tickClock(){
   clock.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }
 tickClock(); setInterval(tickClock,1000);
+}
 </script>
 </body>
 </html>
