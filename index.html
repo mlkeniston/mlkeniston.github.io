@@ -46,7 +46,9 @@ body{
    DEEP SPACE — base star field, nebula
    ═══════════════════════════════════════════════════════ */
 .space{
-  position:fixed;inset:0;
+  position:fixed;inset:-12px;
+  translate:var(--orbit-pointer-x,0px) var(--orbit-pointer-y,0px);
+  transition:translate .18s ease-out;
   background:
     radial-gradient(ellipse 80% 60% at 20% 20%, #0a1830 0%, transparent 60%),
     radial-gradient(ellipse 60% 40% at 80% 90%, #0a1428 0%, transparent 60%),
@@ -180,8 +182,9 @@ body{
    ═══════════════════════════════════════════════════════ */
 .sun{
   position:absolute;left:18%;top:12%;width:0;height:0;
+  translate:var(--orbit-pointer-x,0px) var(--orbit-pointer-y,0px);
   pointer-events:none;opacity:0;
-  transition:opacity 1.2s ease;
+  transition:translate .18s ease-out,opacity 1.2s ease;
 }
 body.is-orbit .sun{opacity:1}
 .sun-core{
@@ -220,6 +223,7 @@ body.is-orbit .sun{opacity:1}
    ═══════════════════════════════════════════════════════ */
 .planet-stage{
   position:absolute;
+  translate:var(--orbit-pointer-x,0px) var(--orbit-pointer-y,0px);
   left:50%;
   bottom:calc(100% - 20vh - 240vw);
   width:240vw;height:240vw;
@@ -231,6 +235,7 @@ body.is-orbit .sun{opacity:1}
     margin-left 1.4s cubic-bezier(.7,0,.2,1),
     left 1.4s cubic-bezier(.7,0,.2,1),
     transform 1.4s cubic-bezier(.7,0,.2,1),
+    translate .18s ease-out,
     opacity 1.4s ease;
 }
 body.is-destination-map .planet-stage{opacity:0;pointer-events:none}
@@ -366,9 +371,11 @@ body.is-destination-map .ship-stage{opacity:0}
    correctly whether the destinations menu is open or not. */
 .ship-warp-wrapper{
   position:fixed;inset:0;
+  translate:var(--orbit-pointer-x,0px) var(--orbit-pointer-y,0px);
   pointer-events:none;
   z-index:5;
   transform:translateX(0);
+  transition:translate .18s ease-out;
 }
 body.is-warp-out-flying .ship-warp-wrapper{
   animation:warpFlyOut 1s cubic-bezier(.5,0,.5,1) forwards;
@@ -2095,18 +2102,33 @@ let mapFocus = 0;
 let returnToMapAfterModal = false;
 const towerMenu = document.querySelector('.tower-marker');
 const destinationPanel = document.getElementById('destPanel');
+const orbitParallaxTargets = document.querySelectorAll('.space,.sun,#planetStage,.ship-warp-wrapper');
+const warpClasses = ['is-warp-bright','is-warp-out-flying','is-warp-lightspeed','is-warp-in-flying','is-warp-settling'];
 function resetDestinationParallax(){
   destinationPanel.style.setProperty('--dest-pointer-x','0px');
   destinationPanel.style.setProperty('--dest-pointer-y','0px');
 }
+function resetOrbitParallax(){
+  orbitParallaxTargets.forEach(el=>{
+    el.style.setProperty('--orbit-pointer-x','0px');
+    el.style.setProperty('--orbit-pointer-y','0px');
+  });
+}
 window.addEventListener('pointermove',e=>{
-  if(e.pointerType !== 'mouse' || !body.classList.contains('is-destination-map')) return;
+  if(e.pointerType !== 'mouse' || body.classList.contains('is-guardian-menu-open')) return;
   const x = .5 - e.clientX / window.innerWidth;
   const y = .5 - e.clientY / window.innerHeight;
-  destinationPanel.style.setProperty('--dest-pointer-x',`${x * 16}px`);
-  destinationPanel.style.setProperty('--dest-pointer-y',`${y * 10}px`);
+  if(body.classList.contains('is-destination-map')){
+    destinationPanel.style.setProperty('--dest-pointer-x',`${x * 16}px`);
+    destinationPanel.style.setProperty('--dest-pointer-y',`${y * 10}px`);
+  }else if(body.classList.contains('is-orbit') && !body.classList.contains('is-briefing') && !warpClasses.some(cls=>body.classList.contains(cls))){
+    orbitParallaxTargets.forEach(el=>{
+      el.style.setProperty('--orbit-pointer-x',`${x * 16}px`);
+      el.style.setProperty('--orbit-pointer-y',`${y * 10}px`);
+    });
+  }
 });
-window.addEventListener('pointerout',e=>{if(!e.relatedTarget) resetDestinationParallax()});
+window.addEventListener('pointerout',e=>{if(!e.relatedTarget){resetDestinationParallax();resetOrbitParallax()}});
 document.addEventListener('click',e=>{
   if(towerMenu.open&&!towerMenu.contains(e.target)) towerMenu.open=false;
 });
@@ -2115,6 +2137,7 @@ towerMenu.querySelectorAll('.tower-links a').forEach(link=>link.addEventListener
 function showOrbit(){
   cancelLaunchCountdown();
   resetDestinationParallax();
+  resetOrbitParallax();
   towerMenu.open = false;
   body.classList.add('is-orbit');
   body.classList.remove('is-destination-map','is-briefing');
@@ -2125,6 +2148,7 @@ function showOrbit(){
 function showDestinationMap(){
   cancelLaunchCountdown();
   resetDestinationParallax();
+  resetOrbitParallax();
   body.classList.remove('is-orbit');
   body.classList.remove('is-briefing');
   body.classList.add('is-destination-map');
@@ -2136,6 +2160,7 @@ function showDestinationMap(){
 function selectDestination(i){
   cancelLaunchCountdown();
   resetDestinationParallax();
+  resetOrbitParallax();
   towerMenu.open = false;
   pendingDest = i;
   body.classList.remove('is-destination-map');
@@ -2440,6 +2465,8 @@ function setMenuExpanded(expanded){
 }
 function openGuardianMenu(){
   cancelLaunchCountdown();
+  resetDestinationParallax();
+  resetOrbitParallax();
   if(isGuardianMenuOpen()) return;
   menuOpener = document.activeElement;
   guardianMenu.classList.add('is-open');
