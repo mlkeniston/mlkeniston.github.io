@@ -2556,8 +2556,8 @@ function playArrivalWhoosh(){
   arrivalSfx.currentTime = 0;
   arrivalSfx.play().then(() => { shipArrivalSoundDue = false; }).catch(() => {});
 }
-setTimeout(() => { shipArrivalSoundDue = true; playArrivalWhoosh(); }, 6000);
-setTimeout(() => { shipArrivalWindow = false; }, 10000);
+setTimeout(() => { shipArrivalSoundDue = true; playArrivalWhoosh(); }, 5000);
+setTimeout(() => { shipArrivalWindow = false; }, 9000);
 
 audio1.volume = (volPct / 100) * VOL_CAP;
 audio2.volume = 0;
