@@ -2175,20 +2175,20 @@ function playMetallicLaunchClick(){
     launchClickContext ||= new AudioContextClass();
     if(launchClickContext.state === 'suspended') launchClickContext.resume();
     const now = launchClickContext.currentTime;
-    const level = (volPct / 100) * VOL_CAP * .22;
-    [[1850,1],[2780,.42]].forEach(([frequency,amplitude])=>{
+    const level = (volPct / 100) * VOL_CAP * .045;
+    [[1250,1],[1880,.18]].forEach(([frequency,amplitude])=>{
       const tone = launchClickContext.createOscillator();
       const envelope = launchClickContext.createGain();
       tone.type = 'triangle';
       tone.frequency.setValueAtTime(frequency,now);
-      tone.frequency.exponentialRampToValueAtTime(frequency * .72,now + .09);
+      tone.frequency.exponentialRampToValueAtTime(frequency * .84,now + .06);
       envelope.gain.setValueAtTime(.0001,now);
       envelope.gain.exponentialRampToValueAtTime(level * amplitude,now + .004);
-      envelope.gain.exponentialRampToValueAtTime(.0001,now + .12);
+      envelope.gain.exponentialRampToValueAtTime(.0001,now + .075);
       tone.connect(envelope);
       envelope.connect(launchClickContext.destination);
       tone.start(now);
-      tone.stop(now + .13);
+      tone.stop(now + .08);
     });
   }catch{}
 }
