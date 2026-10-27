@@ -2537,8 +2537,10 @@ wireHot('.dest-row, .modal-btn, .mh-close, .dest-btn, .back-btn, .audio-btn, .pl
    ═══════════════════════════════════════════════════════ */
 const audio1 = new Audio('media/01_-_Eighth__Orbit_ver__.mp3');
 const audio2 = new Audio('media/07_-_Home__Orbit_ver__.mp3');
+const arrivalSfx = new Audio('media/destiny_ship_arrival_whoosh.mp3');
 audio1.preload = 'auto';
 audio2.preload = 'auto';
+arrivalSfx.preload = 'auto';
 // Tracks alternate: 01 → 07 → 01 → 07 …
 
 const VOL_CAP = 0.75;         // music max volume = 75% of original
@@ -2546,9 +2548,20 @@ let volPct = 60;              // slider value 0-100, default 60
 let prevVol = 60;
 let audioStarted = false;
 let crossfading = false;
+let shipArrivalWindow = true;
+let shipArrivalSoundDue = false;
+
+function playArrivalWhoosh(){
+  if(!shipArrivalWindow || !shipArrivalSoundDue || volPct === 0 || !arrivalSfx.paused) return;
+  arrivalSfx.currentTime = 0;
+  arrivalSfx.play().then(() => { shipArrivalSoundDue = false; }).catch(() => {});
+}
+setTimeout(() => { shipArrivalSoundDue = true; playArrivalWhoosh(); }, 5000);
+setTimeout(() => { shipArrivalWindow = false; }, 9000);
 
 audio1.volume = (volPct / 100) * VOL_CAP;
 audio2.volume = 0;
+arrivalSfx.volume = (volPct / 100) * VOL_CAP;
 
 const audioBtn = document.getElementById('audioBtn');
 const slider = document.getElementById('volumeSlider');
@@ -2557,12 +2570,14 @@ slider.style.setProperty('--vol', volPct + '%');
 function setVol(pct){
   volPct = Math.max(0, Math.min(100, pct));
   const v = (volPct / 100) * VOL_CAP;
+  arrivalSfx.volume = v;
   if (!crossfading){
     if (!audio1.paused) audio1.volume = v;
     if (!audio2.paused) audio2.volume = v;
   }
   audioBtn.classList.toggle('is-muted', volPct === 0);
   slider.style.setProperty('--vol', volPct + '%');
+  playArrivalWhoosh();
 }
 
 slider.addEventListener('input', () => setVol(+slider.value));
@@ -2610,6 +2625,7 @@ function crossfade(from, to){
 
 /* Browsers block autoplay until user interaction — retry on first input */
 function tryStartAudio(){
+  playArrivalWhoosh();
   if (audioStarted) return;
   audio1.play().then(() => { audioStarted = true; }).catch(() => {});
 }
