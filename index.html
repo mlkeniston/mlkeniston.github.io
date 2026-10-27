@@ -2539,6 +2539,7 @@ wireHot('.dest-row, .modal-btn, .mh-close, .dest-btn, .back-btn, .audio-btn, .pl
 const audio1 = new Audio('media/01_-_Eighth__Orbit_ver__.mp3');
 const audio2 = new Audio('media/07_-_Home__Orbit_ver__.mp3');
 const arrivalSfx = new Audio('media/destiny_ship_arrival_whoosh.mp3');
+const arrivalSfxStart = 1.84; // Skip the silent lead-in in the supplied clip.
 audio1.preload = 'auto';
 audio2.preload = 'auto';
 arrivalSfx.preload = 'auto';
@@ -2555,7 +2556,7 @@ let shipArrivalSoundDue = false;
 function playArrivalWhoosh(){
   if(volPct === 0) return Promise.resolve();
   arrivalSfx.pause();
-  arrivalSfx.currentTime = 0;
+  arrivalSfx.currentTime = arrivalSfxStart;
   return arrivalSfx.play();
 }
 function playInitialArrivalWhoosh(){
