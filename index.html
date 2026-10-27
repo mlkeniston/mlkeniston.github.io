@@ -1422,29 +1422,6 @@ html.firefox-compat .firefox-notice{
 .player-card:hover .pc-tile{filter:brightness(1.18)}
 
 /* ═══════════════════════════════════════════════════════
-   WARP transition
-   ═══════════════════════════════════════════════════════ */
-.warp{
-  position:fixed;inset:0;z-index:75;pointer-events:none;opacity:0;
-  background:radial-gradient(circle at 50% 50%, transparent 0%, var(--fill,rgba(10,44,82,.97)) 80%);
-}
-.warp.is-on{opacity:1;animation:warpFlash .9s cubic-bezier(.7,0,.3,1)}
-@keyframes warpFlash{0%{opacity:0}40%{opacity:1}100%{opacity:0}}
-.warp-streaks{position:fixed;inset:0;z-index:76;pointer-events:none;opacity:0;overflow:hidden}
-.warp-streaks.is-on{opacity:1}
-.streak{
-  position:absolute;left:50%;top:50%;width:2px;height:2px;background:#fff;
-  box-shadow:0 0 6px #fff,0 0 12px var(--teal);
-  transform-origin:center;opacity:0;
-}
-.warp-streaks.is-on .streak{animation:streak .9s cubic-bezier(.6,0,.4,1) forwards}
-@keyframes streak{
-  0%{opacity:0;transform:translate(-50%,-50%) rotate(var(--a,0deg)) translateX(0) scaleX(1)}
-  20%{opacity:1}
-  100%{opacity:0;transform:translate(-50%,-50%) rotate(var(--a,0deg)) translateX(120vmax) scaleX(20)}
-}
-
-/* ═══════════════════════════════════════════════════════
    OVERLAYS — scanlines, vignette, grain
    ═══════════════════════════════════════════════════════ */
 .scanlines{
@@ -2041,10 +2018,6 @@ body.is-briefing .mobile-menu-btn,body.is-destination-map .mobile-menu-btn{visib
   </div>
 </div>
 
-<!-- WARP -->
-<div class="warp" id="warp"></div>
-<div class="warp-streaks" id="warpStreaks"></div>
-
 <!-- OVERLAYS -->
 <div class="scanlines"></div>
 <div class="vignette"></div>
@@ -2241,18 +2214,7 @@ rows.forEach(r=>{
 });
 
 /* warp + modal */
-const warp = document.getElementById('warp');
-const streaksEl = document.getElementById('warpStreaks');
 const modal = document.getElementById('modal');
-
-const N = 28;
-for(let k=0;k<N;k++){
-  const s = document.createElement('div');
-  s.className = 'streak';
-  s.style.setProperty('--a', (Math.random()*360)+'deg');
-  s.style.animationDelay = (Math.random()*.15)+'s';
-  streaksEl.appendChild(s);
-}
 
 /* ═══════════════════════════════════════════════════════
    WARP SEQUENCE — chained class transitions on body
@@ -2268,13 +2230,11 @@ for (let k = 0; k < NUM_LS_STREAKS; k++) {
   lsStreaksEl.appendChild(s);
 }
 
-let warpBufferTimer = null;   // 2s debounce timer
-let warpPhaseTimers = [];     // chain timers (for cleanup if needed)
-let warpState = 'idle';       // idle | waiting | bright | flying-out | lightspeed | flying-in | settling
+let warpPhaseTimers = [];     // timers for each phase of travel
+let warpState = 'idle';       // idle | bright | flying-out | lightspeed | flying-in | settling
 let warpInQueued = false;
 
 function clearWarpTimers(){
-  if (warpBufferTimer){ clearTimeout(warpBufferTimer); warpBufferTimer = null; }
   warpPhaseTimers.forEach(t => clearTimeout(t));
   warpPhaseTimers = [];
 }
@@ -2333,26 +2293,15 @@ function beginWarpIn(){
     }, 1000));
   }, 1500));
 }
-function startWarpSequence(){
+function startWarpSequence(i){
   clearWarpTimers();
   warpInQueued = false;
-  warpState = 'waiting';
-  // 2-second buffer — if modal closes before this fires, no warp at all
-  warpBufferTimer = setTimeout(() => {
-    warpBufferTimer = null;
-    beginWarpOut();
-  }, 2000);
+  beginWarpOut();
+  // Outbound flight is 1s bright + 1s flyout; open the menu 1s into lightspeed.
+  warpPhaseTimers.push(setTimeout(() => openModal(i), 3000));
 }
 function endWarpSequence(){
   if (warpState === 'idle') return;
-  if (warpState === 'waiting'){
-    // Closed before buffer elapsed — abort entirely
-    clearWarpTimers();
-    warpState = 'idle';
-    activeWarpDest = -1;
-    document.getElementById('launchSelected').disabled = false;
-    return;
-  }
   if (warpState === 'lightspeed'){
     if(warpInQueued) return;
     // Hold lightspeed for 1 more second, then return
@@ -2373,21 +2322,9 @@ function launch(i){
     openModal(i);
     return;
   }
-  const d = DEST[i];
   activeWarpDest = i;
-  document.getElementById('launchSelected').disabled = true;
-  warp.style.setProperty('--fill', d.fill);
-  warp.classList.add('is-on');
-  streaksEl.classList.add('is-on');
-  streaksEl.querySelectorAll('.streak').forEach(s=>{
-    s.style.animation='none'; void s.offsetWidth;
-    s.style.animation='';
-  });
-  setTimeout(()=>openModal(i), 520);
-  setTimeout(()=>{
-    warp.classList.remove('is-on');
-    streaksEl.classList.remove('is-on');
-  }, 900);
+  launchButton.disabled = true;
+  startWarpSequence(i);
 }
 
 let modalOpener = null;
@@ -2424,10 +2361,6 @@ function openModal(i){
   });
   modal.classList.add('is-open');
   document.getElementById('modalClose').focus();
-  // Only start the lightspeed sequence when traveling to a different planet
-  if (i !== lastVisited){
-    startWarpSequence();
-  }
 }
 function closeModal(){
   modal.classList.remove('is-open');
