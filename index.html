@@ -307,13 +307,6 @@ body.is-destination-map .ship-stage{opacity:0}
   opacity:0;
   animation:podGlowSettle 8s ease-out 5s forwards;
 }
-.engine-trail{
-  position:absolute;height:2.6%;border-radius:50%;opacity:0;pointer-events:none;
-  transform-origin:100% 50%;filter:blur(3px) drop-shadow(0 0 9px rgba(57,177,255,.8));
-  background:linear-gradient(90deg,transparent 0%,rgba(44,139,255,.06) 20%,rgba(47,166,255,.28) 62%,rgba(98,219,255,.86) 94%,rgba(220,250,255,.95) 100%);
-}
-.engine-trail-a{left:30%;top:26.7%;width:28%;transform:rotate(16deg) scaleX(.3)}
-.engine-trail-b{left:3%;top:68.7%;width:28%;transform:rotate(16deg) scaleX(.3)}
 .engine-pod-a{left:58.2%;top:28%;transform:translate(-50%,-50%)}
 .engine-pod-b{left:31.2%;top:70%;transform:translate(-50%,-50%)}
 .engine-fire{
@@ -390,8 +383,6 @@ body.is-warp-lightspeed .ship-warp-wrapper{
 body.is-warp-in-flying .ship-warp-wrapper{
   animation:warpFlyBackIn 1.5s cubic-bezier(.2,.7,.2,1) forwards;
 }
-body.is-warp-out-flying .engine-trail{animation:shipTrailOut 1s ease-out forwards}
-body.is-warp-in-flying .engine-trail{animation:shipTrailIn 1.5s ease-out forwards}
 @keyframes warpFlyOut{
   0%{transform:translateX(0)}
   100%{transform:translateX(125vw)}
@@ -399,18 +390,6 @@ body.is-warp-in-flying .engine-trail{animation:shipTrailIn 1.5s ease-out forward
 @keyframes warpFlyBackIn{
   0%{transform:translateX(-125vw)}
   100%{transform:translateX(0)}
-}
-@keyframes shipTrailOut{
-  0%{opacity:0;transform:rotate(16deg) scaleX(.3)}
-  12%{opacity:.92;transform:rotate(16deg) scaleX(1)}
-  70%{opacity:.78;transform:rotate(16deg) scaleX(.9)}
-  100%{opacity:0;transform:rotate(16deg) scaleX(.55)}
-}
-@keyframes shipTrailIn{
-  0%{opacity:0;transform:rotate(16deg) scaleX(.3)}
-  12%{opacity:.92;transform:rotate(16deg) scaleX(1)}
-  72%{opacity:.74;transform:rotate(16deg) scaleX(.82)}
-  100%{opacity:0;transform:rotate(16deg) scaleX(.45)}
 }
 
 /* Engine brightness boost during warp phases */
@@ -1729,7 +1708,6 @@ body.is-warp-settling .mobile-menu-btn{visibility:hidden;opacity:0;pointer-event
   <div class="ship-bob">
 <div class="ship-effects" aria-hidden="true">
   <i class="engine-halo engine-pod-a"></i><i class="engine-halo engine-pod-b"></i>
-  <i class="engine-trail engine-trail-a"></i><i class="engine-trail engine-trail-b"></i>
   <i class="engine-fire engine-fire-a"></i><i class="engine-fire engine-fire-b"></i>
 </div>
 <img src="media/destiny-jumpship.svg" alt="" />
