@@ -2440,7 +2440,11 @@ document.getElementById('gmDismissBtn').addEventListener('click',closeGuardianMe
 const cursor = document.getElementById('cursor');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let cx=0, cy=0, tx=0, ty=0;
-window.addEventListener('mousemove', e=>{ tx=e.clientX; ty=e.clientY; });
+let cursorFrame = null;
+window.addEventListener('mousemove', e=>{
+  tx=e.clientX; ty=e.clientY;
+  if(!reduceMotion && cursorFrame === null) cursorFrame=requestAnimationFrame(tick);
+});
 // Block pinch at gesture start and re-lock the viewport when Safari restores this page.
 const viewportMeta = document.querySelector('meta[name="viewport"]');
 const lockedViewport = 'width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no';
@@ -2465,11 +2469,11 @@ document.addEventListener('gesturechange',e=>e.preventDefault(),{passive:false})
 window.addEventListener('pageshow',restoreMobileViewport);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)restoreMobileViewport()});
 function tick(){
+  cursorFrame = null;
   cx += (tx-cx)*.22; cy += (ty-cy)*.22;
   cursor.style.transform = `translate(${cx}px,${cy}px) translate(-50%,-50%)`;
-  if(!reduceMotion) requestAnimationFrame(tick);
+  if(Math.abs(tx-cx)>.1 || Math.abs(ty-cy)>.1) cursorFrame=requestAnimationFrame(tick);
 }
-if(!reduceMotion) tick();
 function wireHot(sel){
   document.querySelectorAll(sel).forEach(el=>{
     el.addEventListener('mouseenter', ()=>cursor.classList.add('is-hot'));
