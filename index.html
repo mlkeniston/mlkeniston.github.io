@@ -48,7 +48,7 @@ body{
 .space{
   position:fixed;inset:-12px;
   translate:var(--orbit-pointer-x,0px) var(--orbit-pointer-y,0px);
-  transition:translate .18s ease-out;
+  transition:translate .3s cubic-bezier(.22,.61,.36,1);
   background:
     radial-gradient(ellipse 80% 60% at 20% 20%, #0a1830 0%, transparent 60%),
     radial-gradient(ellipse 60% 40% at 80% 90%, #0a1428 0%, transparent 60%),
@@ -184,7 +184,7 @@ body{
   position:absolute;left:18%;top:12%;width:0;height:0;
   translate:var(--orbit-pointer-x,0px) var(--orbit-pointer-y,0px);
   pointer-events:none;opacity:0;
-  transition:translate .18s ease-out,opacity 1.2s ease;
+  transition:translate .3s cubic-bezier(.22,.61,.36,1),opacity 1.2s ease;
 }
 body.is-orbit .sun{opacity:1}
 .sun-core{
@@ -235,7 +235,7 @@ body.is-orbit .sun{opacity:1}
     margin-left 1.4s cubic-bezier(.7,0,.2,1),
     left 1.4s cubic-bezier(.7,0,.2,1),
     transform 1.4s cubic-bezier(.7,0,.2,1),
-    translate .18s ease-out,
+    translate .3s cubic-bezier(.22,.61,.36,1),
     opacity 1.4s ease;
 }
 body.is-destination-map .planet-stage{opacity:0;pointer-events:none}
@@ -375,7 +375,7 @@ body.is-destination-map .ship-stage{opacity:0}
   pointer-events:none;
   z-index:5;
   transform:translateX(0);
-  transition:translate .18s ease-out;
+  transition:translate .3s cubic-bezier(.22,.61,.36,1);
 }
 body.is-warp-out-flying .ship-warp-wrapper{
   animation:warpFlyOut 1s cubic-bezier(.5,0,.5,1) forwards;
@@ -868,7 +868,7 @@ body.is-destination-map .hud{visibility:hidden;pointer-events:none}
   z-index:20;
   opacity:0;pointer-events:none;visibility:hidden;
   transform:translateY(8px);
-  transition:translate .18s ease-out, transform .55s cubic-bezier(.2,.7,.2,1), opacity .45s ease, visibility .45s;
+  transition:translate .3s cubic-bezier(.22,.61,.36,1), transform .55s cubic-bezier(.2,.7,.2,1), opacity .45s ease, visibility .45s;
 }
 body.is-destination-map .dest-panel{transform:translateY(0);opacity:1;visibility:visible;pointer-events:auto}
 
